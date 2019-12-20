@@ -16,5 +16,5 @@ public interface ConfigurationDao {
     Configuration fetch();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void store(final Configuration configuration);
+    long store(final Configuration configuration);
 }
