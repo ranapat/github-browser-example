@@ -83,8 +83,8 @@ ext {
 
     cache_asset_prefix = "cache"
 
-    config_api_development = "https://sandbox.ranapat.org/config.json"
-    config_api_production = "https://sandbox.ranapat.org/config.json"
+    config_api_development = "https://sandbox.ranapat.org/githubbrowser/config.json"
+    config_api_production = "https://sandbox.ranapat.org/githubbrowser/config.json"
 
     // values below 0 will make records not to expire
     keep_configuration_for_development = 30
