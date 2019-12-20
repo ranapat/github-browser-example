@@ -27,12 +27,6 @@ public class GithubBrowserApplication extends Application {
         initializeTimber();
     }
 
-    private void initializeTimber() {
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
-    }
-
     @Contract(pure = true)
     public static Application getApplication() {
         return application;
@@ -50,8 +44,14 @@ public class GithubBrowserApplication extends Application {
             final SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
             sslContext.init(null, null, null);
             final SSLEngine engine = sslContext.createSSLEngine();
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             //
+        }
+    }
+
+    private void initializeTimber() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
         }
     }
 
