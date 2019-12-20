@@ -23,4 +23,5 @@ dependencies {
     implementation "androidx.room:room-runtime:${room}"
 
     implementation "com.github.ranapat:instancefactory:${instancefactory}"
+    implementation "com.github.ranapat:hal:${hal}"
 }
