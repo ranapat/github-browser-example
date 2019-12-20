@@ -1,0 +1,26 @@
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
+    implementation "org.jetbrains.kotlin:kotlin-allopen:${kotlin_version}"
+    implementation "androidx.core:core-ktx:${core_ktx}"
+
+    implementation "commons-codec:commons-codec:${commons_codec}"
+    implementation "commons-io:commons-io:${commons_io}"
+
+    implementation "io.reactivex.rxjava2:rxjava:${rxjava}"
+    implementation "io.reactivex.rxjava2:rxandroid:${rxandroid}"
+    implementation "org.jetbrains.anko:anko:${anko}"
+
+    implementation "com.squareup.okhttp3:okhttp:${okhttp}"
+
+    kapt "androidx.lifecycle:lifecycle-compiler:${lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-extensions:${lifecycle}"
+
+    implementation "com.google.android.gms:play-services-auth:${play_services_auth}"
+
+    implementation "com.jakewharton.timber:timber:${timber}"
+
+    kapt "androidx.room:room-compiler:${room}"
+    implementation "androidx.room:room-runtime:${room}"
+
+    implementation "com.github.ranapat:instancefactory:${instancefactory}"
+}

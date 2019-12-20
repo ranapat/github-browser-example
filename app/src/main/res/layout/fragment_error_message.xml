@@ -1,0 +1,57 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.splashscreen.ErrorMessageFragment">
+
+    <ImageView
+        android:id="@+id/errorIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:adjustViewBounds="false"
+        android:contentDescription="@string/generic_error"
+        android:cropToPadding="false"
+        android:paddingTop="@dimen/default_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_wifi_strength_alert_outline_primary_color_24dp" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:text="@string/empty_string"
+        android:textAlignment="center"
+        android:textSize="@dimen/font_size"
+        android:textColor="@color/primary_font_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/errorIcon" />
+
+    <Button
+        android:id="@+id/retry"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_sync_primary_color_24dp"
+        android:drawablePadding="@dimen/default_padding"
+        android:text="@string/retry"
+        android:textAllCaps="false"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/font_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/message"
+        android:paddingEnd="@dimen/outline_padding"
+        android:paddingStart="@dimen/outline_padding" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_color">#357CA2</color>
+    <color name="secondary_color">#F2F2F2</color>
+
+    <color name="primary_font_color">#000000</color>
+    <color name="progress_color">@color/primary_color</color>
+
+    <color name="snackbar_info_background_color">#117b42</color>
+    <color name="snackbar_info_font_color">@android:color/white</color>
+    <color name="snackbar_success_background_color">#117b42</color>
+    <color name="snackbar_success_font_color">@android:color/white</color>
+    <color name="snackbar_warning_background_color">#efb71f</color>
+    <color name="snackbar_warning_font_color">@android:color/white</color>
+    <color name="snackbar_apply_background_color">@color/primary_color</color>
+    <color name="snackbar_apply_font_color">@android:color/white</color>
+    <color name="snackbar_error_background_color">#c4401a</color>
+    <color name="snackbar_error_font_color">@android:color/white</color>
+</resources>

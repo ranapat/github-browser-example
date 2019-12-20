@@ -1,0 +1,6 @@
+dependencies {
+    implementation "androidx.appcompat:appcompat:${appcompat}"
+    implementation "androidx.preference:preference:${preference}"
+    implementation "androidx.constraintlayout:constraintlayout:${constraint_layout}"
+    implementation "com.google.android.material:material:${material}"
+}

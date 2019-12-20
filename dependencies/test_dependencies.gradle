@@ -1,0 +1,31 @@
+dependencies {
+    androidTestImplementation "androidx.test:runner:${test.test_runner}"
+    androidTestImplementation "androidx.test:rules:${test.test_rules}"
+    androidTestImplementation "androidx.test.ext:junit:${test.test_ext}"
+    androidTestImplementation "com.android.support:support-annotations:${test.support_annotations}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${test.espresso}"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:${test.espresso}"
+
+    testImplementation "junit:junit:${test.junit}"
+    testImplementation "org.json:json:${test.json}"
+
+    testImplementation "com.squareup.okhttp3:mockwebserver:${okhttp}"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:${okhttp}"
+
+    testImplementation "org.mockito:mockito-core:${test.mockito}"
+    testImplementation "org.mockito:mockito-inline:${test.mockito}"
+    androidTestImplementation "org.mockito:mockito-android:${test.mockito}"
+
+    testImplementation "info.cukes:cucumber-android:${test.cucumber_android}"
+    testImplementation "info.cukes:cucumber-picocontainer:${test.cucumber}"
+    androidTestImplementation "info.cukes:cucumber-android:${test.cucumber_android}"
+    androidTestImplementation "info.cukes:cucumber-picocontainer:${test.cucumber}"
+    testImplementation "info.cukes:cucumber-junit:${test.cucumber}"
+
+    testImplementation "androidx.room:room-testing:${room}"
+    androidTestImplementation "androidx.room:room-testing:${room}"
+
+    compileOnly "org.projectlombok:lombok:${test.lambok}"
+    annotationProcessor "org.projectlombok:lombok:${test.lambok}"
+    kapt "org.projectlombok:lombok:${test.lambok}"
+}

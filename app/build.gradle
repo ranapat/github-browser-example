@@ -1,0 +1,109 @@
+apply plugin: "com.android.application"
+apply plugin: "kotlin-android"
+apply plugin: "kotlin-android-extensions"
+apply plugin: "kotlin-kapt"
+apply from: "./jacoco.gradle"
+apply from: '../dependencies/ui_dependencies.gradle'
+apply from: '../dependencies/core_dependencies.gradle'
+apply from: '../dependencies/test_dependencies.gradle'
+
+android {
+    compileSdkVersion sdk_compile_version
+
+    defaultConfig {
+        applicationId "org.ranapat.examples.githubbrowser"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        minSdkVersion sdk_min_version
+        targetSdkVersion sdk_target_version
+
+        versionCode version_code
+        versionName version_name
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    sourceSets {
+        androidTest {
+            assets.srcDirs = ['src/androidTest/assets']
+        }
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+    }
+
+    testOptions {
+        unitTests.all {
+            // All the usual Gradle options.
+        }
+        unitTests.returnDefaultValues = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField("long", "debounce_navigation_in_milliseconds", "${debounce_navigation_in_milliseconds}")
+            buildConfigField("int", "assets_network_timeout", "${assets_network_timeout}")
+            buildConfigField("String", "cache_asset_prefix", "\"${cache_asset_prefix}\"")
+        }
+
+        debug {
+            testCoverageEnabled (project.hasProperty('coverage') ? true : false)
+
+            buildConfigField("long", "debounce_navigation_in_milliseconds", "${debounce_navigation_in_milliseconds}")
+            buildConfigField("int", "assets_network_timeout", "${assets_network_timeout}")
+            buildConfigField("String", "cache_asset_prefix", "\"${cache_asset_prefix}\"")
+
+            buildConfigField "String", "TEST_TAGS", "\"${getTestTags()}\""
+        }
+    }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        development {
+            dimension "default"
+            ext.enableCrashlytics = false
+
+            buildConfigField("Boolean", "reset_database", "false")
+
+            buildConfigField("String", "config_api", "\"${config_api_development}\"")
+
+            buildConfigField("int", "keep_configuration_for", "${keep_configuration_for_development}")
+            buildConfigField("int", "keep_entities_for", "${keep_entities_for_development}")
+        }
+
+        production {
+            dimension "default"
+
+            buildConfigField("Boolean", "reset_database", "false")
+
+            buildConfigField("String", "config_api", "\"${config_api_production}\"")
+
+            buildConfigField("int", "keep_configuration_for", "${keep_configuration_for_production}")
+            buildConfigField("int", "keep_entities_for", "${keep_entities_for_production}")
+        }
+    }
+
+    lintOptions {
+        disable 'PrivateResource'
+    }
+}
+
+def getTestTags() {
+    return project.hasProperty("tags") ? project.getProperties().get("tags") : ""
+}
+
+task devTests(type: GradleBuild) {
+    group = 'local development'
+    tasks = ['lintDevelopmentDebug', 'testDevelopmentDebugUnitTestCoverage', 'connectedDevelopmentDebugAndroidTest']
+    doLast {
+        //
+    }
+}

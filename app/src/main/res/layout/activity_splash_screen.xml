@@ -1,0 +1,46 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.splashscreen.SplashScreenActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_weight="3"
+        android:contentDescription="@string/github_logo"
+        app:layout_constraintBottom_toTopOf="@id/fragmentContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_github" />
+
+    <LinearLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/akeliusLogo" />
+
+    <ImageView
+        android:id="@+id/akeliusLogo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="64dp"
+        android:layout_weight="1"
+        android:contentDescription="@string/ranapat_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_ranapat" />
+
+</LinearLayout>

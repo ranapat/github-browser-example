@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">GithubBrowserExample</string>
+    <string name="github_logo">Github logo</string>
+    <string name="ranapat_logo">Ranapat logo</string>
+
+    <string name="empty_string"> </string>
+
+    <string name="generic_error">generic error</string>
+    <string name="unexpected_error">Unexpected error</string>
+
+    <string name="retry">retry</string>
+</resources>
