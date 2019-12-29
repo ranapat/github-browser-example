@@ -21,7 +21,7 @@ import static androidx.room.ForeignKey.CASCADE;
 public class UserUrls implements DataEntity {
     @NotNull
     @ColumnInfo(name = "user_id")
-    public long userId;
+    public final long userId;
 
     @ColumnInfo(name = "url")
     public final String url;

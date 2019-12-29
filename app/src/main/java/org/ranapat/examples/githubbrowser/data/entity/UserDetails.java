@@ -24,7 +24,7 @@ import static androidx.room.ForeignKey.CASCADE;
 public class UserDetails implements DataEntity {
     @NotNull
     @ColumnInfo(name = "user_id")
-    public long userId;
+    public final long userId;
 
     @Nullable
     @ColumnInfo(name = "name")

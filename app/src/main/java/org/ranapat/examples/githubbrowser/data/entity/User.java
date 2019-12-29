@@ -28,7 +28,7 @@ public class User implements ExpirableEntity {
 
     @NotNull
     @ColumnInfo(name = "organization_id")
-    public long organizationId;
+    public final long organizationId;
 
     @ColumnInfo(name = "login")
     public final String login;
