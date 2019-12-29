@@ -69,8 +69,6 @@ public class MainViewModel extends BaseViewModel {
 
     @Override
     protected void triggerNetworkStatus(final Boolean isOnline) {
-        if (isOnline) {
-            initialize();
-        }
+        //
     }
 }
