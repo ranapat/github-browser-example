@@ -66,6 +66,7 @@ public class ConfigurationRaoTest {
         assertThat(server.takeRequest().getRequestUrl().toString(), is(equalTo(baseUrl.toString())));
 
         assertThat(configuration.defaultMembersInOrganizationPerPage, is(equalTo(1)));
+        assertThat(configuration.organization, is(equalTo("example0")));
         assertThat(configuration.organizationMembers, is(equalTo("example1")));
         assertThat(configuration.userInfo, is(equalTo("example2")));
 

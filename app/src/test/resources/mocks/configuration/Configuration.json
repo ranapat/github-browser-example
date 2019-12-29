@@ -3,6 +3,7 @@
     "defaultMembersInOrganization": 1
   },
   "links": {
+    "organization": "example0",
     "organizationMembers": "example1",
     "userInfo": "example2"
   }

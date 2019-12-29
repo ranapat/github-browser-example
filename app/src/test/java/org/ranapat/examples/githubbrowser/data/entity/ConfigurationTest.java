@@ -20,12 +20,14 @@ public class ConfigurationTest {
         final Configuration configuration = new Configuration(
                 1,
                 15,
+                "organization",
                 "organizationMembers",
                 "userInfo",
                 date
         );
         assertThat(configuration.id, is(equalTo(1L)));
         assertThat(configuration.defaultMembersInOrganizationPerPage, is(equalTo(15)));
+        assertThat(configuration.organization, is(equalTo("organization")));
         assertThat(configuration.organizationMembers, is(equalTo("organizationMembers")));
         assertThat(configuration.userInfo, is(equalTo("userInfo")));
         assertThat(configuration.updatedAt, is(equalTo(date)));
@@ -35,6 +37,7 @@ public class ConfigurationTest {
     public void shouldSetDefaultParameters() {
         final Configuration configuration = new Configuration(
                 15,
+                "organization",
                 "organizationMembers",
                 "userInfo"
         );
@@ -49,6 +52,7 @@ public class ConfigurationTest {
     public void shouldGetUpdatedAt() {
         final Configuration configuration = new Configuration(
                 15,
+                "organization",
                 "organizationMembers",
                 "userInfo"
         );
@@ -64,6 +68,7 @@ public class ConfigurationTest {
         final Configuration configuration = new Configuration(
                 1,
                 15,
+                "organization",
                 "organizationMembers",
                 "userInfo",
                 date
@@ -86,6 +91,7 @@ public class ConfigurationTest {
         final Configuration configuration = new Configuration(
                 1,
                 15,
+                "organization",
                 "organizationMembers",
                 "userInfo",
                 calendar.getTime()
@@ -108,6 +114,7 @@ public class ConfigurationTest {
         final Configuration configuration = new Configuration(
                 1,
                 15,
+                "organization",
                 "organizationMembers",
                 "userInfo",
                 calendar.getTime()

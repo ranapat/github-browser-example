@@ -16,6 +16,9 @@ public class Migration_1_2 extends Migration {
                 "ALTER TABLE 'configuration' ADD COLUMN 'default_members_in_organization_per_page' INTEGER NOT NULL DEFAULT 0"
         );
         database.execSQL(
+                "ALTER TABLE 'configuration' ADD COLUMN 'organization' TEXT"
+        );
+        database.execSQL(
                 "UPDATE 'configuration' set 'default_members_in_organization_per_page' = 15, 'updated_at' = 0"
         );
     }
