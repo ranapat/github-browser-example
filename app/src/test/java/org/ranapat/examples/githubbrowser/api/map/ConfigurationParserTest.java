@@ -25,6 +25,7 @@ public class ConfigurationParserTest {
         final Configuration configuration = configurationParser.parse(jsonObject);
 
         assertEquals(1, configuration.id);
+        assertEquals(1, configuration.defaultMembersInOrganizationPerPage);
         assertEquals("example1", configuration.organizationMembers);
         assertEquals("example2", configuration.userInfo);
         assertNotNull(configuration.updatedAt);

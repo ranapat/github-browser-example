@@ -14,6 +14,7 @@ import org.ranapat.examples.githubbrowser.data.dao.ConfigurationDao;
 import org.ranapat.examples.githubbrowser.data.dao.UserDao;
 import org.ranapat.examples.githubbrowser.data.entity.Configuration;
 import org.ranapat.examples.githubbrowser.data.entity.User;
+import org.ranapat.examples.githubbrowser.data.migration.Migration_1_2;
 import org.ranapat.examples.githubbrowser.data.tools.Converters;
 import org.ranapat.instancefactory.StaticallyInstantiable;
 
@@ -23,7 +24,7 @@ import org.ranapat.instancefactory.StaticallyInstantiable;
 
                 User.class
         },
-        version = 1,
+        version = 2,
         exportSchema = true
 )
 @TypeConverters({
@@ -49,10 +50,9 @@ public abstract class ApplicationDatabase extends RoomDatabase {
 
         return Room.databaseBuilder(
                 context, ApplicationDatabase.class, DB_NAME)
-                /*
                 .addMigrations(
+                        new Migration_1_2()
                 )
-                */
                 .fallbackToDestructiveMigration()
                 .build();
     }

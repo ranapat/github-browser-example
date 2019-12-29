@@ -1,4 +1,7 @@
 {
+  "itemsPerPage": {
+    "defaultMembersInOrganization": 1
+  },
   "links": {
     "organizationMembers": "example1",
     "userInfo": "example2"

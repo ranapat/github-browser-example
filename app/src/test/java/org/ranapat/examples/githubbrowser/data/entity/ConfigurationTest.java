@@ -19,11 +19,13 @@ public class ConfigurationTest {
 
         final Configuration configuration = new Configuration(
                 1,
+                15,
                 "organizationMembers",
                 "userInfo",
                 date
         );
         assertThat(configuration.id, is(equalTo(1L)));
+        assertThat(configuration.defaultMembersInOrganizationPerPage, is(equalTo(15)));
         assertThat(configuration.organizationMembers, is(equalTo("organizationMembers")));
         assertThat(configuration.userInfo, is(equalTo("userInfo")));
         assertThat(configuration.updatedAt, is(equalTo(date)));
@@ -32,10 +34,12 @@ public class ConfigurationTest {
     @Test
     public void shouldSetDefaultParameters() {
         final Configuration configuration = new Configuration(
+                15,
                 "organizationMembers",
                 "userInfo"
         );
         assertThat(configuration.id, is(equalTo(1L)));
+        assertThat(configuration.defaultMembersInOrganizationPerPage, is(equalTo(15)));
         assertThat(configuration.organizationMembers, is(equalTo("organizationMembers")));
         assertThat(configuration.userInfo, is(equalTo("userInfo")));
         assertThat(configuration.updatedAt, is(not(equalTo(null))));
@@ -44,6 +48,7 @@ public class ConfigurationTest {
     @Test
     public void shouldGetUpdatedAt() {
         final Configuration configuration = new Configuration(
+                15,
                 "organizationMembers",
                 "userInfo"
         );
@@ -58,6 +63,7 @@ public class ConfigurationTest {
 
         final Configuration configuration = new Configuration(
                 1,
+                15,
                 "organizationMembers",
                 "userInfo",
                 date
@@ -79,6 +85,7 @@ public class ConfigurationTest {
 
         final Configuration configuration = new Configuration(
                 1,
+                15,
                 "organizationMembers",
                 "userInfo",
                 calendar.getTime()
@@ -100,6 +107,7 @@ public class ConfigurationTest {
 
         final Configuration configuration = new Configuration(
                 1,
+                15,
                 "organizationMembers",
                 "userInfo",
                 calendar.getTime()

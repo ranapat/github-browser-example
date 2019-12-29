@@ -14,6 +14,9 @@ public class Configuration implements ExpirableEntity {
     @PrimaryKey
     public final long id;
 
+    @ColumnInfo(name = "default_members_in_organization_per_page")
+    public final int defaultMembersInOrganizationPerPage;
+
     @ColumnInfo(name = "organization_members")
     public final String organizationMembers;
 
@@ -25,11 +28,13 @@ public class Configuration implements ExpirableEntity {
 
     @Ignore
     public Configuration(
+            final int defaultMembersInOrganizationPerPage,
             final String organizationMembers,
             final String userInfo
     ) {
         this(
                 1,
+                defaultMembersInOrganizationPerPage,
                 organizationMembers,
                 userInfo,
                 new Date()
@@ -38,12 +43,14 @@ public class Configuration implements ExpirableEntity {
 
     public Configuration(
             final long id,
+            final int defaultMembersInOrganizationPerPage,
             final String organizationMembers,
             final String userInfo,
             final Date updatedAt
     ) {
         this.id = id;
 
+        this.defaultMembersInOrganizationPerPage = defaultMembersInOrganizationPerPage;
         this.organizationMembers = organizationMembers;
         this.userInfo = userInfo;
 

@@ -8,6 +8,7 @@ public class ConfigurationParser implements Parseable<Configuration> {
     @Override
     public Configuration parse(final JSONObject jsonObject) throws JSONException {
         final Configuration configuration = new Configuration(
+                jsonObject.getJSONObject("itemsPerPage").getInt("defaultMembersInOrganization"),
                 jsonObject.getJSONObject("links").getString("organizationMembers"),
                 jsonObject.getJSONObject("links").getString("userInfo")
         );
