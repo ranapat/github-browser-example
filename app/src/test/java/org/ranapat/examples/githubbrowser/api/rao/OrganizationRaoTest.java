@@ -49,7 +49,6 @@ public class OrganizationRaoTest {
                                 new String(Files.readAllBytes(Paths.get(
                                         getClass().getClassLoader().getResource("mocks/organizations/Organization.json").getPath()
                                 )), Encoding.DEFAULT_ENCODING)
-                                        .replaceAll("https?://[^/]+/", baseUrl.toString())
                         )
         );
 
@@ -78,7 +77,6 @@ public class OrganizationRaoTest {
                                 new String(Files.readAllBytes(Paths.get(
                                         getClass().getClassLoader().getResource("mocks/organizations/Organization.json").getPath()
                                 )), Encoding.DEFAULT_ENCODING)
-                                        .replaceAll("https?://[^/]+/", baseUrl.toString())
                         )
         );
 

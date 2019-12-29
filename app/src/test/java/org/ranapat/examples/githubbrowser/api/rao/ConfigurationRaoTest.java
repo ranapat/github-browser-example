@@ -56,7 +56,6 @@ public class ConfigurationRaoTest {
                                 new String(Files.readAllBytes(Paths.get(
                                         getClass().getClassLoader().getResource("mocks/configuration/Configuration.json").getPath()
                                 )), Encoding.DEFAULT_ENCODING)
-                                        .replaceAll("https?://[^/]+/", baseUrl.toString())
                         )
         );
 
@@ -86,7 +85,6 @@ public class ConfigurationRaoTest {
                                 new String(Files.readAllBytes(Paths.get(
                                         getClass().getClassLoader().getResource("mocks/configuration/Configuration.json").getPath()
                                 )), Encoding.DEFAULT_ENCODING)
-                                        .replaceAll("https?://[^/]+/", baseUrl.toString())
                         )
         );
 
