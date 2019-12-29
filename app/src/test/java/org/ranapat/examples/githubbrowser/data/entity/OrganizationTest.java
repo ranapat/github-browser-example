@@ -19,12 +19,10 @@ public class OrganizationTest {
         final Organization organization = new Organization(
                 1,
                 "login",
-                "membersUrl",
                 date
         );
         assertThat(organization.id, is(equalTo(1L)));
         assertThat(organization.login, is(equalTo("login")));
-        assertThat(organization.membersUrl, is(equalTo("membersUrl")));
         assertThat(organization.updatedAt, is(equalTo(date)));
     }
 
@@ -33,7 +31,6 @@ public class OrganizationTest {
         final Organization organization = new Organization(
                 1,
                 "login",
-                "membersUrl",
                 new Date()
         );
         assertThat(organization.getUpdatedAt(), is(equalTo(organization.updatedAt)));
@@ -48,7 +45,6 @@ public class OrganizationTest {
         final Organization organization = new Organization(
                 1,
                 "login",
-                "membersUrl",
                 date
         );
         assertThat(organization.isUpToDate(), is(equalTo(true)));
@@ -69,7 +65,6 @@ public class OrganizationTest {
         final Organization organization = new Organization(
                 1,
                 "login",
-                "membersUrl",
                 calendar.getTime()
         );
         assertThat(organization.isUpToDate(), is(equalTo(false)));
@@ -90,7 +85,6 @@ public class OrganizationTest {
         final Organization organization = new Organization(
                 1,
                 "login",
-                "membersUrl",
                 calendar.getTime()
         );
         assertThat(organization.isUpToDate(), is(equalTo(true)));

@@ -16,21 +16,16 @@ public class Organization implements ExpirableEntity {
     @ColumnInfo(name = "login")
     public final String login;
 
-    @ColumnInfo(name = "members_url")
-    public final String membersUrl;
-
     @ColumnInfo(name = "updated_at")
     public final Date updatedAt;
 
     public Organization(
             final long id,
             final String login,
-            final String membersUrl,
             final Date updatedAt
     ) {
         this.id = id;
         this.login = login;
-        this.membersUrl = membersUrl;
         this.updatedAt = updatedAt;
     }
 

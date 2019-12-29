@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "75085703b8f6672c496244ac3cf59aef",
+    "identityHash": "70f86a3463a6f82ea14e65593dd5522a",
     "entities": [
       {
         "tableName": "configuration",
@@ -56,7 +56,7 @@
       },
       {
         "tableName": "organizations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `login` TEXT, `members_url` TEXT, `updated_at` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `login` TEXT, `updated_at` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -67,12 +67,6 @@
           {
             "fieldPath": "login",
             "columnName": "login",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "membersUrl",
-            "columnName": "members_url",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -363,7 +357,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '75085703b8f6672c496244ac3cf59aef')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '70f86a3463a6f82ea14e65593dd5522a')"
     ]
   }
 }
