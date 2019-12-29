@@ -10,43 +10,33 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class UserTest {
+public class OrganizationTest {
 
     @Test
     public void shouldSetAllFields() {
         final Date date = new Date();
 
-        final User user = new User(
+        final Organization organization = new Organization(
                 1,
-                2,
                 "login",
-                "avatarUrl",
-                "type",
-                true,
+                "membersUrl",
                 date
         );
-        assertThat(user.id, is(equalTo(1L)));
-        assertThat(user.organizationId, is(equalTo(2L)));
-        assertThat(user.login, is(equalTo("login")));
-        assertThat(user.avatarUrl, is(equalTo("avatarUrl")));
-        assertThat(user.siteAdmin, is(equalTo(true)));
-        assertThat(user.updatedAt, is(equalTo(date)));
-        assertThat(user.details, is(equalTo(null)));
-        assertThat(user.urls, is(equalTo(null)));
+        assertThat(organization.id, is(equalTo(1L)));
+        assertThat(organization.login, is(equalTo("login")));
+        assertThat(organization.membersUrl, is(equalTo("membersUrl")));
+        assertThat(organization.updatedAt, is(equalTo(date)));
     }
 
     @Test
     public void shouldGetUpdatedAt() {
-        final User user = new User(
+        final Organization organization = new Organization(
                 1,
-                2,
                 "login",
-                "avatarUrl",
-                "type",
-                true,
+                "membersUrl",
                 new Date()
         );
-        assertThat(user.getUpdatedAt(), is(equalTo(user.updatedAt)));
+        assertThat(organization.getUpdatedAt(), is(equalTo(organization.updatedAt)));
     }
 
     @Test
@@ -55,16 +45,13 @@ public class UserTest {
 
         UpToDateChecker.setValues(0, 1);
 
-        final User user = new User(
+        final Organization organization = new Organization(
                 1,
-                2,
                 "login",
-                "avatarUrl",
-                "type",
-                true,
+                "membersUrl",
                 date
         );
-        assertThat(user.isUpToDate(), is(equalTo(true)));
+        assertThat(organization.isUpToDate(), is(equalTo(true)));
 
         UpToDateChecker.resetValues();
     }
@@ -79,16 +66,13 @@ public class UserTest {
         calendar.setTime(date);
         calendar.add(Calendar.MINUTE, -1);
 
-        final User user = new User(
+        final Organization organization = new Organization(
                 1,
-                2,
                 "login",
-                "avatarUrl",
-                "type",
-                true,
+                "membersUrl",
                 calendar.getTime()
         );
-        assertThat(user.isUpToDate(), is(equalTo(false)));
+        assertThat(organization.isUpToDate(), is(equalTo(false)));
 
         UpToDateChecker.resetValues();
     }
@@ -103,16 +87,13 @@ public class UserTest {
         calendar.setTime(date);
         calendar.add(Calendar.MINUTE, 100);
 
-        final User user = new User(
+        final Organization organization = new Organization(
                 1,
-                2,
                 "login",
-                "avatarUrl",
-                "type",
-                true,
+                "membersUrl",
                 calendar.getTime()
         );
-        assertThat(user.isUpToDate(), is(equalTo(true)));
+        assertThat(organization.isUpToDate(), is(equalTo(true)));
 
         UpToDateChecker.resetValues();
     }

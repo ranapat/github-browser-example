@@ -11,9 +11,15 @@ import androidx.room.TypeConverters;
 import org.ranapat.examples.githubbrowser.GithubBrowserApplication;
 import org.ranapat.examples.githubbrowser.Settings;
 import org.ranapat.examples.githubbrowser.data.dao.ConfigurationDao;
+import org.ranapat.examples.githubbrowser.data.dao.OrganizationDao;
 import org.ranapat.examples.githubbrowser.data.dao.UserDao;
+import org.ranapat.examples.githubbrowser.data.dao.UserDetailsDao;
+import org.ranapat.examples.githubbrowser.data.dao.UserUrlsDao;
 import org.ranapat.examples.githubbrowser.data.entity.Configuration;
+import org.ranapat.examples.githubbrowser.data.entity.Organization;
 import org.ranapat.examples.githubbrowser.data.entity.User;
+import org.ranapat.examples.githubbrowser.data.entity.UserDetails;
+import org.ranapat.examples.githubbrowser.data.entity.UserUrls;
 import org.ranapat.examples.githubbrowser.data.migration.Migration_1_2;
 import org.ranapat.examples.githubbrowser.data.tools.Converters;
 import org.ranapat.instancefactory.StaticallyInstantiable;
@@ -22,9 +28,13 @@ import org.ranapat.instancefactory.StaticallyInstantiable;
         entities = {
                 Configuration.class,
 
-                User.class
+                Organization.class,
+
+                User.class,
+                UserDetails.class,
+                UserUrls.class
         },
-        version = 2,
+        version = 3,
         exportSchema = true
 )
 @TypeConverters({
@@ -52,6 +62,7 @@ public abstract class ApplicationDatabase extends RoomDatabase {
                 context, ApplicationDatabase.class, DB_NAME)
                 .addMigrations(
                         new Migration_1_2()
+                        // destructive migration for 2 to 3
                 )
                 .fallbackToDestructiveMigration()
                 .build();
@@ -59,5 +70,9 @@ public abstract class ApplicationDatabase extends RoomDatabase {
 
     public abstract ConfigurationDao configurationDao();
 
+    public abstract OrganizationDao organizationDao();
+
     public abstract UserDao userDao();
+    public abstract UserDetailsDao userDetailsDao();
+    public abstract UserUrlsDao userUrlsDao();
 }
