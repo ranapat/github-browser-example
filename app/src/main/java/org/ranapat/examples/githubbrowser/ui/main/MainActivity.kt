@@ -7,11 +7,15 @@ import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_main.*
 import org.ranapat.examples.githubbrowser.R
 import org.ranapat.examples.githubbrowser.Settings
+import org.ranapat.examples.githubbrowser.data.entity.Configuration
+import org.ranapat.examples.githubbrowser.data.entity.Organization
+import org.ranapat.examples.githubbrowser.data.entity.User
 import org.ranapat.examples.githubbrowser.ui.BaseActivity
 import org.ranapat.examples.githubbrowser.ui.common.States.*
 import org.ranapat.examples.githubbrowser.ui.util.startCleanRedirect
 import org.ranapat.examples.githubbrowser.ui.util.startRedirect
 import org.ranapat.examples.githubbrowser.ui.util.subscribeUiThread
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class MainActivity : BaseActivity() {
@@ -20,6 +24,10 @@ class MainActivity : BaseActivity() {
 
     override val layoutResource: Int = R.layout.activity_main
     override fun baseViewModel() = viewModel
+
+    private lateinit var configuration: Configuration
+    private lateinit var organization: Organization
+    private lateinit var users: List<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
@@ -57,6 +65,23 @@ class MainActivity : BaseActivity() {
         subscription(viewModel.next
                 .subscribe {
                     nextActivity = it
+                }
+        )
+        subscription(viewModel.configuration
+                .subscribeUiThread(this) {
+                    configuration = it
+                }
+        )
+        subscription(viewModel.organization
+                .subscribeUiThread(this) {
+                    organization = it
+                }
+        )
+        subscription(viewModel.users
+                .subscribeUiThread(this) {
+                    users = it
+
+                    Timber.e("all users : ${it.size}")
                 }
         )
     }
