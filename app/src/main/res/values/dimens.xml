@@ -24,4 +24,12 @@
     <dimen name="global_spacing_m">32dp</dimen>
     <dimen name="global_spacing_l">48dp</dimen>
 
+    <dimen name="list_image_width">40dp</dimen>
+    <dimen name="list_image_height">40dp</dimen>
+    <dimen name="list_item_height">64dp</dimen>
+    <dimen name="list_button_width">24dp</dimen>
+    <dimen name="list_button_height">24dp</dimen>
+    <dimen name="list_wrapper_width">34dp</dimen>
+    <dimen name="list_wrapper_height">34dp</dimen>
+
 </resources>

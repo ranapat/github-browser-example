@@ -16,5 +16,9 @@
     <string name="search_icon">search icon</string>
     <string name="search_clear">clear search term</string>
 
+    <string name="user_members_list">organization members list</string>
+    <string name="user_member_list_icon">member icon</string>
+    <string name="user_member_list_open">open user details</string>
+
     <string name="retry">retry</string>
 </resources>

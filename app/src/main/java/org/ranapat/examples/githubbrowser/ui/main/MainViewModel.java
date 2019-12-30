@@ -21,12 +21,14 @@ import org.ranapat.examples.githubbrowser.ui.publishable.ParameterizedMessage;
 import org.ranapat.instancefactory.Fi;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.MaybeSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
+import timber.log.Timber;
 
 import static org.ranapat.examples.githubbrowser.ui.common.States.ERROR;
 import static org.ranapat.examples.githubbrowser.ui.common.States.LOADING;
@@ -127,10 +129,19 @@ public class MainViewModel extends BaseViewModel {
                         } else {
                             messages.error.onNext(new ParameterizedMessage(R.string.unexpected_error));
                         }
+                        users.onNext(new ArrayList<User>());
                         state.onNext(ERROR);
                     }
                 })
         );
+    }
+
+    public void clearOrganization() {
+        users.onNext(new ArrayList<User>());
+    }
+
+    public void onItemClickListener(final int position) {
+        Timber.e("### click on " + position);
     }
 
     @Override
