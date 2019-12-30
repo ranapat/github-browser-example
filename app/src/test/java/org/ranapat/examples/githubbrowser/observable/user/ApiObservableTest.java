@@ -11,6 +11,9 @@ import java.util.List;
 import io.reactivex.observers.TestObserver;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,7 +67,9 @@ public class ApiObservableTest {
         final TestObserver<List<User>> testObserver = apiObservable.fetchMemberList("url", organization, 1).test();
 
         testObserver.awaitTerminalEvent();
-        testObserver.assertResult(users);
+        assertThat(testObserver.valueCount(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0).size(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0).get(0), is(equalTo(user)));
     }
 
     @Test

@@ -82,8 +82,9 @@ public class DataObservableTest {
         final TestObserver<List<User>> testObserver = dataObservable.fetchAllByOrganization(organization).test();
 
         testObserver.awaitTerminalEvent();
-        assertThat(users.size(), is(equalTo(1)));
-        assertThat(users.get(0), is(equalTo(user)));
+        assertThat(testObserver.valueCount(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0).size(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0).get(0), is(equalTo(user)));
     }
 
     @Test
@@ -207,8 +208,9 @@ public class DataObservableTest {
         final TestObserver<List<User>> testObserver = dataObservable.store(users).test();
 
         testObserver.awaitTerminalEvent();
-        assertThat(users.size(), is(equalTo(1)));
-        assertThat(users.get(0), is(equalTo(user)));
+        assertThat(testObserver.valueCount(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0).size(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0).get(0), is(equalTo(user)));
     }
 
 }
