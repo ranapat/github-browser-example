@@ -20,6 +20,7 @@ buildscript {
         commons_io = '2.6'
         constraint_layout = '2.0.0-beta1'
         core_ktx = '1.0.1'
+        glide = '4.10.0'
         hal = '1.0.0'
         instancefactory = '1.0.2'
         lifecycle = '2.1.0-alpha01'
