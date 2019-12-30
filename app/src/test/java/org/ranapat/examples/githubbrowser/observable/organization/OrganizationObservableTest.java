@@ -236,7 +236,7 @@ public class OrganizationObservableTest {
         when(organization1.isUpToDate()).thenReturn(true);
         when(organization2.isUpToDate()).thenReturn(true);
         when(apiObservable.fetchByLogin("url", "login")).thenReturn(Maybe.just(organization1));
-        when(dataObservable.fetchByLogin("login")).thenReturn(Maybe.just(organization1));
+        when(dataObservable.fetchByLogin("login")).thenReturn(Maybe.just(organization2));
         when(dataObservable.store(organization1)).thenReturn(Maybe.just(organization1));
         when(dataObservable.store(organization2)).thenReturn(Maybe.just(organization2));
         when(configurationObservable.fetch()).thenReturn(Maybe.just(configuration));
@@ -248,7 +248,7 @@ public class OrganizationObservableTest {
         TestObserver<Organization> testObserver = organizationObservable.fetchByLogin("login").test();
 
         testObserver.awaitTerminalEvent();
-        testObserver.assertResult(organization1);
+        testObserver.assertResult(organization2);
     }
 
     @Test
