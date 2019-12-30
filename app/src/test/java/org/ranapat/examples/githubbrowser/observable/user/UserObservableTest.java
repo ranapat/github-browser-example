@@ -472,6 +472,7 @@ public class UserObservableTest {
             @Override
             public Maybe<List<User>> answer(final InvocationOnMock invocation) {
                 final Object[] args = invocation.getArguments();
+                @SuppressWarnings("unchecked")
                 final List<User> users = (List<User>) args[0];
                 return Maybe.just(users);
             }
