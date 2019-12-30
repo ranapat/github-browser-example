@@ -1,10 +1,13 @@
 package org.ranapat.examples.githubbrowser.ui.main
 
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.sdk27.coroutines.textChangedListener
 import org.ranapat.examples.githubbrowser.R
 import org.ranapat.examples.githubbrowser.Settings
 import org.ranapat.examples.githubbrowser.data.entity.Configuration
@@ -84,6 +87,23 @@ class MainActivity : BaseActivity() {
                     Timber.e("all users : ${it.size}")
                 }
         )
+
+        search.textChangedListener {
+            afterTextChanged {
+                clear.isVisible = search.text.toString().isNotEmpty()
+            }
+        }
+        search.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                viewModel.searchForOrganization(search.text.toString())
+
+                return@OnKeyListener true
+            }
+            false
+        })
+        clear.setOnClickListener {
+            search.setText("")
+        }
     }
 
     private fun loading() {

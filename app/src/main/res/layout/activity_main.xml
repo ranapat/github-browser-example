@@ -6,25 +6,64 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/search"
+        android:layout_marginTop="@dimen/outline_margin"
+        android:layout_marginEnd="@dimen/outline_margin"
+        android:layout_marginStart="@dimen/outline_margin"
+        android:textColor="@color/primary_font_color"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/loading"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/progress_color"
-        android:indeterminateTintMode="src_in"
+        android:gravity="top"
+        android:hint="@string/search_hint"
+        android:autofillHints="languageSearchField"
+        android:inputType="text"
+        android:textSize="@dimen/font_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/outline_half_margin"
+        android:layout_marginEnd="@dimen/outline_half_margin"
+        android:src="@drawable/ic_magnify_black_24dp"
+        android:contentDescription="@string/search_icon"
+        app:layout_constraintTop_toTopOf="@id/search"
+        app:layout_constraintStart_toStartOf="@id/search" />
+
+    <ImageButton
+        android:id="@+id/clear"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/outline_half_margin"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/ic_close_black_24dp"
+        android:contentDescription="@string/search_clear"
+        app:layout_constraintEnd_toEndOf="@id/search"
+        app:layout_constraintTop_toTopOf="@id/search" />
+
+    <LinearLayout
+        android:id="@+id/loading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+            <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/progress_color"
+                android:indeterminateTintMode="src_in"
+                android:layout_marginTop="-6dp"
+                android:layout_marginBottom="-6dp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

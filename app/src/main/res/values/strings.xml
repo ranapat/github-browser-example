@@ -12,5 +12,9 @@
     <string name="error_organization_undefined">No such organization</string>
     <string name="error_users_undefined">Cannot get members list for the organization</string>
 
+    <string name="search_hint">type organization login here…</string>
+    <string name="search_icon">search icon</string>
+    <string name="search_clear">clear search term</string>
+
     <string name="retry">retry</string>
 </resources>

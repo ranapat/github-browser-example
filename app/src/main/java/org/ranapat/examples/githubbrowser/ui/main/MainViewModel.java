@@ -86,8 +86,6 @@ public class MainViewModel extends BaseViewModel {
                     @Override
                     public void accept(final Configuration _configuration) {
                         state.onNext(READY);
-
-                        searchForOrganization("github");
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -123,11 +121,11 @@ public class MainViewModel extends BaseViewModel {
                     @Override
                     public void accept(final Throwable throwable) {
                         if (ExceptionChecker.isLast(throwable, OrganizationUndefinedException.class)) {
-                            messages.success.onNext(new ParameterizedMessage(R.string.error_organization_undefined));
+                            messages.error.onNext(new ParameterizedMessage(R.string.error_organization_undefined));
                         } else if (ExceptionChecker.isLast(throwable, UsersUndefinedException.class)) {
-                            messages.success.onNext(new ParameterizedMessage(R.string.error_users_undefined));
+                            messages.error.onNext(new ParameterizedMessage(R.string.error_users_undefined));
                         } else {
-                            messages.success.onNext(new ParameterizedMessage(R.string.unexpected_error));
+                            messages.error.onNext(new ParameterizedMessage(R.string.unexpected_error));
                         }
                         state.onNext(ERROR);
                     }
