@@ -1,6 +1,8 @@
 package org.ranapat.examples.githubbrowser.api.rao;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
+import org.ranapat.examples.githubbrowser.api.map.UserDetailsParser;
 import org.ranapat.examples.githubbrowser.api.map.UserMembersListParser;
 import org.ranapat.examples.githubbrowser.data.entity.Organization;
 import org.ranapat.examples.githubbrowser.data.entity.User;
@@ -50,5 +52,31 @@ public class UserRao extends BaseRao {
         }
 
         return users;
+    }
+
+    public User fetchDetails(final String userInfoUrl, final User user) throws Exception {
+        try {
+            return doFetchDetails(userInfoUrl, user);
+        } catch (final Exception exception) {
+            logException(exception, "UserRao::fetchDetails");
+
+            throw exception;
+        }
+    }
+
+    private User doFetchDetails(final String userInfoUrl, final User user) throws Exception {
+        final Request request = new Request.Builder()
+                .url(Hal.safe(userInfoUrl, new HashMap<String, Object>() {{
+                    put("login", user.login);
+                }}))
+                .build();
+
+        final Response response = getResponse(request);
+        final String responseString = getResponseString(response);
+        final JSONObject json = new JSONObject(responseString);
+        final UserDetailsParser userDetailsParser = new UserDetailsParser();
+
+        user.details = userDetailsParser.parse(json);
+        return user;
     }
 }

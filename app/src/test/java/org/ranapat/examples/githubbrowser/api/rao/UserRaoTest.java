@@ -23,6 +23,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 
 public class UserRaoTest {
@@ -85,7 +88,7 @@ public class UserRaoTest {
     }
 
     @Test(expected = RequestFailedException.class)
-    public void shouldThrowOnBadResponse() throws Exception {
+    public void shouldThrowOnBadResponseFromFetchMemberList() throws Exception {
         final MockWebServer server = new MockWebServer();
 
         final HttpUrl baseUrl = server.url("");
@@ -109,7 +112,7 @@ public class UserRaoTest {
     }
 
     @Test(expected = JSONException.class)
-    public void shouldThrowOnBadJson() throws Exception {
+    public void shouldThrowOnBadJsonFromFetchMemberList() throws Exception {
         final MockWebServer server = new MockWebServer();
 
         final HttpUrl baseUrl = server.url("");
@@ -125,6 +128,91 @@ public class UserRaoTest {
         final UserRao userRao = new UserRao();
 
         final List<User> users = userRao.fetchMemberList(baseUrl.toString(), organization, 1);
+
+        server.shutdown();
+    }
+
+    @Test
+    public void shouldReturnUser() throws Exception {
+        final MockWebServer server = new MockWebServer();
+
+        final HttpUrl baseUrl = server.url("");
+
+        server.enqueue(
+                new MockResponse()
+                        .setBody(
+                                new String(Files.readAllBytes(Paths.get(
+                                        getClass().getClassLoader().getResource("mocks/users/User.json").getPath()
+                                )), Encoding.DEFAULT_ENCODING)
+                        )
+        );
+
+        final User user = new User(1, 2, "login", null, null, false, null);
+        final UserRao userRao = new UserRao();
+
+        assertNull(user.details);
+
+        final User detailedUser = userRao.fetchDetails(baseUrl.toString(), user);
+
+        assertThat(server.takeRequest().getRequestUrl().toString(), is(equalTo(baseUrl.toString())));
+
+        assertEquals(user, detailedUser);
+        assertNotNull(user.details);
+        assertThat(user.details.userId, is(equalTo(2637602L)));
+        assertThat(user.details.name, is(equalTo("Brian Anglin")));
+        assertThat(user.details.company, is(equalTo("@github ")));
+        assertThat(user.details.blog, is(equalTo("http://briananglin.me")));
+        assertThat(user.details.location, is(equalTo("Los Angeles")));
+        assertThat(user.details.email, is(equalTo("some@email.com")));
+        assertThat(user.details.bio, is(equalTo("\uD83D\uDC4B I love all software & security things. Application Security @GitHub Past: @snapchat CS `18  USC ")));
+        assertThat(user.details.hireable, is(equalTo(true)));
+        assertNotNull(user.details.remoteCreatedAt);
+        assertNotNull(user.details.remoteUpdatedAt);
+
+        server.shutdown();
+    }
+
+    @Test(expected = RequestFailedException.class)
+    public void shouldThrowOnBadResponseFromFetchDetails() throws Exception {
+        final MockWebServer server = new MockWebServer();
+
+        final HttpUrl baseUrl = server.url("");
+
+        server.enqueue(
+                new MockResponse()
+                        .setResponseCode(400)
+                        .setBody(
+                                new String(Files.readAllBytes(Paths.get(
+                                        getClass().getClassLoader().getResource("mocks/users/Organization.members.json").getPath()
+                                )), Encoding.DEFAULT_ENCODING)
+                        )
+        );
+
+        final User user = new User(1, 2, "login", null, null, false, null);
+        final UserRao userRao = new UserRao();
+
+        final User detailedUser = userRao.fetchDetails(baseUrl.toString(), user);
+
+        server.shutdown();
+    }
+
+    @Test(expected = JSONException.class)
+    public void shouldThrowOnBadJsonFromFetchDetails() throws Exception {
+        final MockWebServer server = new MockWebServer();
+
+        final HttpUrl baseUrl = server.url("");
+
+        server.enqueue(
+                new MockResponse()
+                        .setBody(
+                                ""
+                        )
+        );
+
+        final User user = new User(1, 2, "login", null, null, false, null);
+        final UserRao userRao = new UserRao();
+
+        final User detailedUser = userRao.fetchDetails(baseUrl.toString(), user);
 
         server.shutdown();
     }
