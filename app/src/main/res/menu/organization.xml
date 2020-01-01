@@ -2,11 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/sort_by_name_asc"
-        android:title="@string/user_member_list_sort_name_asc" />
+        android:id="@+id/sort_by_name"
+        android:title="@string/user_member_list_sort_name" />
     <item
-        android:id="@+id/sort_by_name_desc"
-        android:title="@string/user_member_list_sort_name_desc" />
+        android:id="@+id/sort_by_public_repos"
+        android:title="@string/user_member_list_sort_public_repos" />
+    <item
+        android:id="@+id/sort_by_followers"
+        android:title="@string/user_member_list_sort_followers" />
+    <item
+        android:id="@+id/sort_by_public_gists"
+        android:title="@string/user_member_list_sort_public_gists" />
+    <item
+        android:id="@+id/sort_asc"
+        android:title="@string/user_member_list_sort_asc" />
+    <item
+        android:id="@+id/sort_desc"
+        android:title="@string/user_member_list_sort_desc" />
     <item
         android:id="@+id/show_up_to_limit"
         android:title="@string/user_member_list_up_to_limit" />

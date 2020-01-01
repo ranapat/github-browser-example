@@ -8,37 +8,44 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_user_member_list.view.*
-import org.ranapat.examples.githubbrowser.R.string
+import org.ranapat.examples.githubbrowser.R
+import org.ranapat.examples.githubbrowser.data.entity.User
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-    private var user: ListUser? = null
+    private var user: ListUser = ListUser(User(1, 1, null, null, null, false, null))
+    private var searchBy: String = ""
 
     private val extraItemSpacing: View = view.extraItemSpacing
     private val avatar: ImageView = view.avatar
-    private val login: TextView = view.login
+    private val info: TextView = view.info
     private val date: TextView = view.date
     private val progressBar: ProgressBar = view.progressBar
     private val incomplete: ImageView = view.incomplete
 
     fun bind(
             user: ListUser,
-            position: Int
+            position: Int,
+            searchBy: String
     ) {
+        this.searchBy = searchBy
+
         setUser(user)
         setPosition(position)
+    }
+
+    fun setSearchBy(it: String) {
+        searchBy = it
+
+        setInfo()
     }
 
     fun setUser(user: ListUser) {
         this.user = user
 
-        if (user.user.details != null) {
-            login.text = "${user.user.login} - ${user.user.details.name}"
-        } else {
-            login.text = user.user.login
-        }
+        setInfo()
 
         if (user.incomplete) {
             progressBar.isVisible = true
@@ -62,8 +69,27 @@ class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         setAvatar(user)
     }
 
+    private fun setInfo() {
+        if (user.user.details != null) {
+            if (searchBy == OrganizationViewModel.SORT_BY_NAME) {
+                info.text = view.context.getString(R.string.user_member_list_name).format(user.user.login, user.user.details?.name)
+            } else if (searchBy == OrganizationViewModel.SORT_BY_PUBLIC_REPOS) {
+                info.text = view.context.getString(R.string.user_member_list_public_repos).format(user.user.login, user.user.details?.publicRepos)
+            } else if (searchBy == OrganizationViewModel.SORT_BY_FOLLOWERS) {
+                info.text = view.context.getString(R.string.user_member_list_followers).format(user.user.login, user.user.details?.followers)
+
+            } else if (searchBy == OrganizationViewModel.SORT_BY_PUBLIC_GISTS) {
+                info.text = view.context.getString(R.string.user_member_list_public_gists).format(user.user.login, user.user.details?.publicGists)
+            } else {
+                info.text = view.context.getString(R.string.user_member_list_login).format(user.user.login)
+            }
+        } else {
+            info.text = user.user.login
+        }
+    }
+
     private fun setContentDescriptions(user: ListUser) {
-        avatar.contentDescription = view.context.getString(string.user_member_list_icon) + " " + user.user.login
+        avatar.contentDescription = view.context.getString(R.string.user_member_list_icon) + " " + user.user.login
     }
 
     private fun setPosition(position: Int) {

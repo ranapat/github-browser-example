@@ -33,7 +33,7 @@
             app:srcCompat="@drawable/ic_generic_error" />
 
         <TextView
-            android:id="@+id/login"
+            android:id="@+id/info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_margin"
@@ -61,7 +61,7 @@
             android:ellipsize="end"
             android:layout_marginEnd="@dimen/default_margin"
             app:layout_constraintBottom_toBottomOf="parent"
-            swipe:layout_constraintStart_toEndOf="@id/login"
+            swipe:layout_constraintStart_toEndOf="@id/info"
             app:layout_constraintEnd_toStartOf="@id/progressBar"
             app:layout_constraintTop_toTopOf="parent" />
 

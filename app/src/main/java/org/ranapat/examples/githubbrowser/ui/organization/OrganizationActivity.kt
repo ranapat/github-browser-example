@@ -33,7 +33,8 @@ class OrganizationActivity : BaseActivity() {
     override val layoutResource: Int = R.layout.activity_organization
     override fun baseViewModel() = viewModel
 
-    private var sort: String = ""
+    private var sortBy: String = ""
+    private var sortDirection: String = ""
     private var limit: String = ""
 
     private val listAdapter: ListAdapter
@@ -59,22 +60,39 @@ class OrganizationActivity : BaseActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.getItem(0)?.isEnabled = sort != SORT_BY_NAME_ASC
-        menu?.getItem(1)?.isEnabled = sort != SORT_BY_NAME_DESC
+        menu?.getItem(0)?.isEnabled = sortBy != SORT_BY_NAME
+        menu?.getItem(1)?.isEnabled = sortBy != SORT_BY_PUBLIC_REPOS
+        menu?.getItem(2)?.isEnabled = sortBy != SORT_BY_FOLLOWERS
+        menu?.getItem(3)?.isEnabled = sortBy != SORT_BY_PUBLIC_GISTS
 
-        menu?.getItem(2)?.isEnabled = limit != UP_TO_LIMIT
-        menu?.getItem(3)?.isEnabled = limit != NO_LIMIT
+        menu?.getItem(4)?.isEnabled = sortDirection != SORT_DIRECTION_ASC
+        menu?.getItem(5)?.isEnabled = sortDirection != SORT_DIRECTION_DESC
+
+        menu?.getItem(6)?.isEnabled = limit != UP_TO_LIMIT
+        menu?.getItem(7)?.isEnabled = limit != NO_LIMIT
 
         return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.sort_by_name_asc -> {
-                viewModel.sortByNameAsc()
+            R.id.sort_by_name -> {
+                viewModel.sortBy(SORT_BY_NAME)
             }
-            R.id.sort_by_name_desc -> {
-                viewModel.sortByNameDesc()
+            R.id.sort_by_public_repos -> {
+                viewModel.sortBy(SORT_BY_PUBLIC_REPOS)
+            }
+            R.id.sort_by_followers -> {
+                viewModel.sortBy(SORT_BY_FOLLOWERS)
+            }
+            R.id.sort_by_public_gists -> {
+                viewModel.sortBy(SORT_BY_PUBLIC_GISTS)
+            }
+            R.id.sort_asc -> {
+                viewModel.sortDirection(SORT_DIRECTION_ASC)
+            }
+            R.id.sort_desc -> {
+                viewModel.sortDirection(SORT_DIRECTION_DESC)
             }
             R.id.show_up_to_limit -> {
                 viewModel.showUpToLimit()
@@ -152,9 +170,18 @@ class OrganizationActivity : BaseActivity() {
                     listAdapter.setUser(it)
                 }
         )
-        subscription(viewModel.sort
+        subscription(viewModel.sortBy
                 .subscribeUiThread(this) {
-                    sort = it
+                    sortBy = it
+
+                    listAdapter.setSearchBy(it)
+
+                    invalidateOptionsMenu()
+                }
+        )
+        subscription(viewModel.sortDirection
+                .subscribeUiThread(this) {
+                    sortDirection = it
 
                     invalidateOptionsMenu()
                 }

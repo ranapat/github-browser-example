@@ -22,9 +22,18 @@
     <string name="user_members_list">organization members list</string>
     <string name="user_member_list_icon">member icon</string>
     <string name="user_member_list_open">open user details</string>
+    <string name="user_member_list_login">login: %s</string>
+    <string name="user_member_list_name">%s / %s</string>
+    <string name="user_member_list_public_repos">%s / public repos: %s</string>
+    <string name="user_member_list_followers">%s / followers: %s</string>
+    <string name="user_member_list_public_gists">%s / public gists: %s</string>
     <string name="user_member_list_incomplete">incomplete details</string>
-    <string name="user_member_list_sort_name_asc">sort by name asc</string>
-    <string name="user_member_list_sort_name_desc">sort by name desc</string>
+    <string name="user_member_list_sort_name">sort by name</string>
+    <string name="user_member_list_sort_public_repos">sort by public repos</string>
+    <string name="user_member_list_sort_followers">sort by followers</string>
+    <string name="user_member_list_sort_public_gists">sort by public gists</string>
+    <string name="user_member_list_sort_asc">sort ASC</string>
+    <string name="user_member_list_sort_desc">sort DESC</string>
     <string name="user_member_list_up_to_limit">limit results to predefined</string>
     <string name="user_member_list_no_limit">limit all possible results</string>
 

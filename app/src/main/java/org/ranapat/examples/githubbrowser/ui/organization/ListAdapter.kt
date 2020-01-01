@@ -10,6 +10,15 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
     var onItemClickListener: OnItemListener? = null
 
     private var users: ArrayList<ListUser> = arrayListOf()
+    private var searchBy: String = ""
+
+    fun setSearchBy(it: String) {
+        searchBy = it
+
+        for (i in 0..users.size) {
+            notifyItemChanged(i, POPULATE_SEARCH_BY)
+        }
+    }
 
     fun setUsers(it: List<ListUser>) {
         users = ArrayList(it)
@@ -39,7 +48,8 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
 
         holder.bind(
                 user,
-                position
+                position,
+                searchBy
         )
     }
 
@@ -53,6 +63,7 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
 
                 when (payload) {
                     POPULATE_USER -> holder.setUser(user)
+                    POPULATE_SEARCH_BY -> holder.setSearchBy(searchBy)
                 }
             }
         }
@@ -80,5 +91,6 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
 
     companion object {
         private const val POPULATE_USER = "populateUser"
+        private const val POPULATE_SEARCH_BY = "populateSearchBy"
     }
 }

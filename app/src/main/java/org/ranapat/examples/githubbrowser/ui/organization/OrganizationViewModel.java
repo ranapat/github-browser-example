@@ -39,8 +39,13 @@ import static org.ranapat.examples.githubbrowser.ui.common.States.LOADING;
 import static org.ranapat.examples.githubbrowser.ui.common.States.READY;
 
 public class OrganizationViewModel extends BaseViewModel {
-    public static final String SORT_BY_NAME_ASC = "sortByNameAsc";
-    public static final String SORT_BY_NAME_DESC = "sortByNameDesc";
+    public static final String SORT_BY_NAME = "name";
+    public static final String SORT_BY_PUBLIC_REPOS = "publicRepos";
+    public static final String SORT_BY_FOLLOWERS = "followers";
+    public static final String SORT_BY_PUBLIC_GISTS = "publicGists";
+
+    public static final String SORT_DIRECTION_ASC = "asc";
+    public static final String SORT_DIRECTION_DESC = "desc";
 
     public static final String UP_TO_LIMIT = "upToLimit";
     public static final String NO_LIMIT = "noLimit";
@@ -51,7 +56,8 @@ public class OrganizationViewModel extends BaseViewModel {
     final public PublishSubject<Organization> organization;
     final public PublishSubject<List<ListUser>> users;
     final public PublishSubject<ListUser> user;
-    final public PublishSubject<String> sort;
+    final public PublishSubject<String> sortBy;
+    final public PublishSubject<String> sortDirection;
     final public PublishSubject<String> limit;
 
     final private ConfigurationObservable configurationObservable;
@@ -62,7 +68,8 @@ public class OrganizationViewModel extends BaseViewModel {
 
     private Configuration currentConfiguration;
     private Organization currentOrganization;
-    private String currentSort;
+    private String currentSortBy;
+    private String currentSortDirection;
     private String currentLimit;
     private List<User> usersList;
     private List<ListUser> normalizedUsers;
@@ -88,7 +95,8 @@ public class OrganizationViewModel extends BaseViewModel {
         organization = PublishSubject.create();
         users = PublishSubject.create();
         user = PublishSubject.create();
-        sort = PublishSubject.create();
+        sortBy = PublishSubject.create();
+        sortDirection = PublishSubject.create();
         limit = PublishSubject.create();
     }
 
@@ -146,16 +154,16 @@ public class OrganizationViewModel extends BaseViewModel {
         );
     }
 
-    public void sortByNameAsc() {
-        currentSort = SORT_BY_NAME_ASC;
-        sort.onNext(currentSort);
+    public void sortBy(final String currentSortBy) {
+        this.currentSortBy = currentSortBy;
+        sortBy.onNext(currentSortBy);
 
         normalizeUsers();
     }
 
-    public void sortByNameDesc() {
-        currentSort = SORT_BY_NAME_DESC;
-        sort.onNext(currentSort);
+    public void sortDirection(final String currentSortDirection) {
+        this.currentSortDirection = currentSortDirection;
+        sortDirection.onNext(currentSortDirection);
 
         normalizeUsers();
     }
@@ -184,10 +192,12 @@ public class OrganizationViewModel extends BaseViewModel {
     }
 
     private void resetSortAndLimit() {
-        currentSort = SORT_BY_NAME_ASC;
+        currentSortBy = SORT_BY_NAME;
+        currentSortDirection = SORT_DIRECTION_ASC;
         currentLimit = UP_TO_LIMIT;
 
-        sort.onNext(currentSort);
+        sortBy.onNext(currentSortBy);
+        sortDirection.onNext(currentSortDirection);
         limit.onNext(currentLimit);
     }
 
@@ -197,7 +207,7 @@ public class OrganizationViewModel extends BaseViewModel {
             normalizedUsers.add(new ListUser(user));
         }
 
-        final int positive = currentSort.equals(SORT_BY_NAME_ASC) ? 1 : -1;
+        final int positive = currentSortDirection.equals(SORT_DIRECTION_ASC) ? 1 : -1;
         final int negative = -1 * positive;
         final Comparator<ListUser> comparator = new Comparator<ListUser>() {
             @Override
@@ -246,6 +256,8 @@ public class OrganizationViewModel extends BaseViewModel {
                         @Override
                         public MaybeSource<User> apply(final Throwable throwable) {
                             _user.incomplete = true;
+
+                            user.onNext(_user);
 
                             return Maybe.just(_user.user);
                         }
