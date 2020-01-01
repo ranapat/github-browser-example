@@ -4,6 +4,7 @@ import org.ranapat.examples.githubbrowser.data.entity.Configuration;
 import org.ranapat.examples.githubbrowser.data.entity.Organization;
 import org.ranapat.examples.githubbrowser.data.entity.User;
 import org.ranapat.examples.githubbrowser.observable.configuration.ConfigurationObservable;
+import org.ranapat.examples.githubbrowser.observable.exceptions.UserUndefinedException;
 import org.ranapat.examples.githubbrowser.observable.exceptions.UsersUndefinedException;
 import org.ranapat.instancefactory.Fi;
 
@@ -81,6 +82,51 @@ public class UserObservable {
                     public void accept(final List<User> users, final Throwable throwable) throws UsersUndefinedException {
                         if (users == null || users.size() == 0) {
                             throw new UsersUndefinedException();
+                        }
+                    }
+                });
+    }
+
+    public Maybe<User> fetchDetails(final User user) {
+        return configurationObservable
+                .fetch()
+                .flatMap(new Function<Configuration, MaybeSource<User>>() {
+                    @Override
+                    public MaybeSource<User> apply(final Configuration configuration) {
+                        return fetchDetails(configuration.userInfo, user);
+                    }
+                });
+    }
+
+    private Maybe<User> fetchDetails(final String userInfoUrl, final User user) {
+        final Maybe<User> direct = user.details != null ? Maybe.just(user) : Maybe.<User>empty();
+        final Maybe<User> data = dataObservable
+                .fetchById(user.id);
+        final Maybe<User> api = apiObservable
+                .fetchDetails(userInfoUrl, user)
+                .flatMap(new Function<User, MaybeSource<User>>() {
+                    @Override
+                    public MaybeSource<User> apply(final User user) {
+                        return dataObservable
+                                .store(user);
+                    }
+                });
+
+        return Maybe
+                .concat(direct, data, api)
+                .filter(new Predicate<User>() {
+                    @Override
+                    public boolean test(final User user) {
+                        return user.isUpToDate() && user.details != null;
+                    }
+                })
+                .concatWith(data)
+                .firstElement()
+                .doOnEvent(new BiConsumer<User, Throwable>() {
+                    @Override
+                    public void accept(final User user, final Throwable throwable) throws UsersUndefinedException {
+                        if (user == null || user.details == null) {
+                            throw new UserUndefinedException();
                         }
                     }
                 });

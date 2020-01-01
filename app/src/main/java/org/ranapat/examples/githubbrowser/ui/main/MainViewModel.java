@@ -8,7 +8,6 @@ import org.ranapat.examples.githubbrowser.R;
 import org.ranapat.examples.githubbrowser.data.entity.Configuration;
 import org.ranapat.examples.githubbrowser.data.entity.Organization;
 import org.ranapat.examples.githubbrowser.data.entity.User;
-import org.ranapat.examples.githubbrowser.data.entity.UserDetails;
 import org.ranapat.examples.githubbrowser.management.ApplicationContext;
 import org.ranapat.examples.githubbrowser.management.NetworkManager;
 import org.ranapat.examples.githubbrowser.observable.ExceptionChecker;
@@ -23,11 +22,8 @@ import org.ranapat.instancefactory.Fi;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Maybe;
 import io.reactivex.MaybeSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -162,16 +158,19 @@ public class MainViewModel extends BaseViewModel {
     }
 
     private void loadUserDetails() {
-        subscription(Maybe.just(true)
-                .delay(5, TimeUnit.SECONDS)
-                .subscribe(new Consumer<Boolean>() {
+        subscription(userObservable
+                .fetchDetails(usersList.get(0))
+                .subscribe(new Consumer<User>() {
                     @Override
-                    public void accept(final Boolean aBoolean) {
-                        final User _user = usersList.get(0);
-                        _user.details = new UserDetails(_user.id, "", "", "", "", "", "", false, new Date(), new Date());
-
+                    public void accept(final User _user) {
                         user.onNext(_user);
                     }
-                }));
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(final Throwable throwable) {
+                        messages.warning.onNext(new ParameterizedMessage(R.string.error_user_undefined));
+                    }
+                })
+        );
     }
 }
