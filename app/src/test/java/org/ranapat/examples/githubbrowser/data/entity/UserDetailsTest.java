@@ -24,6 +24,7 @@ public class UserDetailsTest {
                 "email",
                 "bio",
                 true,
+                2, 3, 4,
                 date1,
                 date2
         );
@@ -35,6 +36,9 @@ public class UserDetailsTest {
         assertThat(userDetails.email, is(equalTo("email")));
         assertThat(userDetails.bio, is(equalTo("bio")));
         assertThat(userDetails.hireable, is(equalTo(true)));
+        assertThat(userDetails.publicRepos, is(equalTo(2)));
+        assertThat(userDetails.followers, is(equalTo(3)));
+        assertThat(userDetails.publicGists, is(equalTo(4)));
         assertThat(userDetails.remoteCreatedAt, is(equalTo(date1)));
         assertThat(userDetails.remoteUpdatedAt, is(equalTo(date2)));
     }

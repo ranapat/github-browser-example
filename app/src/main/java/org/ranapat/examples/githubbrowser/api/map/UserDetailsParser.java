@@ -43,6 +43,9 @@ public class UserDetailsParser implements Parseable<UserDetails> {
                 jsonObject.optString("email", null),
                 jsonObject.optString("bio", null),
                 jsonObject.optBoolean("hireable"),
+                jsonObject.optInt("public_repos", 0),
+                jsonObject.optInt("followers", 0),
+                jsonObject.optInt("public_gists", 0),
                 remoteCreatedAt, remoteUpdatedAt
         );
     }

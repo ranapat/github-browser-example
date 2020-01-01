@@ -40,6 +40,9 @@ public class UserDetailsParserTest {
         assertEquals("some@email.com", userDetails.email);
         assertEquals("\uD83D\uDC4B I love all software & security things. Application Security @GitHub Past: @snapchat CS `18  USC ", userDetails.bio);
         assertTrue(userDetails.hireable);
+        assertEquals(98, userDetails.publicRepos);
+        assertEquals(71, userDetails.followers);
+        assertEquals(38, userDetails.publicGists);
         assertEquals("2012-10-24T03:44:53Z", formatterUTC.format(userDetails.remoteCreatedAt));
         assertEquals("2019-12-23T23:17:36Z", formatterUTC.format(userDetails.remoteUpdatedAt));
     }
@@ -61,6 +64,9 @@ public class UserDetailsParserTest {
         assertNull(userDetails.email);
         assertNull(userDetails.bio);
         assertFalse(userDetails.hireable);
+        assertEquals(0, userDetails.publicRepos);
+        assertEquals(0, userDetails.followers);
+        assertEquals(0, userDetails.publicGists);
         assertNull(userDetails.remoteCreatedAt);
         assertNull(userDetails.remoteUpdatedAt);
 

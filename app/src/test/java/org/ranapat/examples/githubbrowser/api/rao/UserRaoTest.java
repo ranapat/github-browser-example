@@ -166,6 +166,9 @@ public class UserRaoTest {
         assertThat(user.details.email, is(equalTo("some@email.com")));
         assertThat(user.details.bio, is(equalTo("\uD83D\uDC4B I love all software & security things. Application Security @GitHub Past: @snapchat CS `18  USC ")));
         assertThat(user.details.hireable, is(equalTo(true)));
+        assertThat(user.details.publicRepos, is(equalTo(98)));
+        assertThat(user.details.followers, is(equalTo(71)));
+        assertThat(user.details.publicGists, is(equalTo(38)));
         assertNotNull(user.details.remoteCreatedAt);
         assertNotNull(user.details.remoteUpdatedAt);
 

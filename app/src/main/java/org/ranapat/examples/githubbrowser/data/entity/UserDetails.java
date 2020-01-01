@@ -55,6 +55,18 @@ public class UserDetails implements DataEntity {
     public final boolean hireable;
 
     @Nullable
+    @ColumnInfo(name = "public_repos")
+    public final int publicRepos;
+
+    @Nullable
+    @ColumnInfo(name = "followers")
+    public final int followers;
+
+    @Nullable
+    @ColumnInfo(name = "public_gists")
+    public final int publicGists;
+
+    @Nullable
     @ColumnInfo(name = "remote_created_at")
     public final Date remoteCreatedAt;
 
@@ -71,6 +83,9 @@ public class UserDetails implements DataEntity {
             final String email,
             final String bio,
             final boolean hireable,
+            final int publicRepos,
+            final int followers,
+            final int publicGists,
             final Date remoteCreatedAt,
             final Date remoteUpdatedAt
     ) {
@@ -82,6 +97,9 @@ public class UserDetails implements DataEntity {
         this.email = email;
         this.bio = bio;
         this.hireable = hireable;
+        this.publicRepos = publicRepos;
+        this.followers = followers;
+        this.publicGists = publicGists;
         this.remoteCreatedAt = remoteCreatedAt;
         this.remoteUpdatedAt = remoteUpdatedAt;
     }

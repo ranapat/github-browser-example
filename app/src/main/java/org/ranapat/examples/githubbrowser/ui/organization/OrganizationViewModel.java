@@ -217,7 +217,10 @@ public class OrganizationViewModel extends BaseViewModel {
         Collections.sort(normalizedUsers, comparator);
 
         if (currentLimit.equals(UP_TO_LIMIT)) {
-            normalizedUsers = normalizedUsers.subList(0, currentConfiguration.defaultMembersInOrganizationPerPage);
+            normalizedUsers = normalizedUsers.subList(
+                    0,
+                    Math.min(normalizedUsers.size(), currentConfiguration.defaultMembersInOrganizationPerPage)
+            );
         }
 
         users.onNext(normalizedUsers);
@@ -244,15 +247,13 @@ public class OrganizationViewModel extends BaseViewModel {
                         public MaybeSource<User> apply(final Throwable throwable) {
                             _user.incomplete = true;
 
-                            user.onNext(_user);
-
                             return Maybe.just(_user.user);
                         }
                     })
                     .doOnSuccess(new Consumer<User>() {
                         @Override
                         public void accept(final User __user) {
-                            //
+                            user.onNext(_user);
                         }
                     })
             );
