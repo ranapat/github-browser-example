@@ -6,10 +6,11 @@ import androidx.room.PrimaryKey;
 
 import org.ranapat.examples.githubbrowser.data.tools.UpToDateChecker;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity(tableName = "organizations")
-public class Organization implements ExpirableEntity {
+public class Organization implements ExpirableEntity, Serializable {
     @PrimaryKey
     public final long id;
 

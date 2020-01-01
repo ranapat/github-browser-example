@@ -1,4 +1,4 @@
-package org.ranapat.examples.githubbrowser.ui.main
+package org.ranapat.examples.githubbrowser.ui.organization
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

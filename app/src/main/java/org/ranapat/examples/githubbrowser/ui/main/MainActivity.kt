@@ -1,28 +1,23 @@
 package org.ranapat.examples.githubbrowser.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.sdk27.coroutines.textChangedListener
 import org.ranapat.examples.githubbrowser.R
 import org.ranapat.examples.githubbrowser.Settings
-import org.ranapat.examples.githubbrowser.data.entity.Configuration
 import org.ranapat.examples.githubbrowser.data.entity.Organization
-import org.ranapat.examples.githubbrowser.data.entity.User
 import org.ranapat.examples.githubbrowser.ui.BaseActivity
-import org.ranapat.examples.githubbrowser.ui.common.OnItemListener
+import org.ranapat.examples.githubbrowser.ui.common.IntentParameters
 import org.ranapat.examples.githubbrowser.ui.common.States.*
 import org.ranapat.examples.githubbrowser.ui.util.hideSoftKeyboard
-import org.ranapat.examples.githubbrowser.ui.util.startCleanRedirect
-import org.ranapat.examples.githubbrowser.ui.util.startRedirect
 import org.ranapat.examples.githubbrowser.ui.util.subscribeUiThread
+import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
 class MainActivity : BaseActivity() {
@@ -32,10 +27,6 @@ class MainActivity : BaseActivity() {
     override val layoutResource: Int = R.layout.activity_main
     override fun baseViewModel() = viewModel
 
-    private val listAdapter: ListAdapter
-        get() = recyclerView.adapter as ListAdapter
-
-    private lateinit var configuration: Configuration
     private lateinit var organization: Organization
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,20 +37,14 @@ class MainActivity : BaseActivity() {
         viewModel.initialize()
     }
 
-    override fun initialize() {
-        super.initialize()
+    override fun onResume() {
+        super.onResume()
 
-        recyclerView.adapter = ListAdapter()
+        search.setText("")
     }
 
     override fun initializeUi() {
-        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        recyclerView.setHasFixedSize(true)
-        recyclerView.itemAnimator = object : DefaultItemAnimator() {
-            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
-                return true
-            }
-        }
+        //
     }
 
     override fun initializeListeners() {
@@ -68,8 +53,7 @@ class MainActivity : BaseActivity() {
                 .throttleFirst(Settings.debounceNavigationInMilliseconds, TimeUnit.MILLISECONDS)
                 .subscribeUiThread(this) {
                     when (it) {
-                        REDIRECT -> startRedirect(nextActivity)
-                        CLEAN_REDIRECT -> startCleanRedirect(nextActivity)
+                        NAVIGATE -> navigate()
                     }
                 }
         )
@@ -88,29 +72,9 @@ class MainActivity : BaseActivity() {
                     nextActivity = it
                 }
         )
-        subscription(viewModel.configuration
-                .subscribeUiThread(this) {
-                    configuration = it
-                }
-        )
         subscription(viewModel.organization
                 .subscribeUiThread(this) {
                     organization = it
-                }
-        )
-        subscription(viewModel.users
-                .subscribeUiThread(this) {
-                    listAdapter.setUsers(it)
-                }
-        )
-        subscription(viewModel.user
-                .subscribeUiThread(this) {
-                    listAdapter.setUser(it)
-                }
-        )
-        subscription(viewModel.incomplete
-                .subscribeUiThread(this) {
-                    listAdapter.setIncomplete(it)
                 }
         )
 
@@ -130,13 +94,6 @@ class MainActivity : BaseActivity() {
         })
         clear.setOnClickListener {
             search.setText("")
-            viewModel.clearOrganization()
-            activity.hideSoftKeyboard()
-        }
-
-        listAdapter.onItemClickListener = OnItemListener { position ->
-            viewModel.onItemClickListener(position)
-
             activity.hideSoftKeyboard()
         }
     }
@@ -151,5 +108,16 @@ class MainActivity : BaseActivity() {
 
     private fun error() {
         loading.isVisible = false
+    }
+
+    private fun navigate() {
+        ready()
+
+        val launchIntent = Intent()
+        launchIntent.setClass(applicationContext, nextActivity)
+        launchIntent.putExtra(IntentParameters.ORGANIZATION, organization as Serializable)
+        startActivity(launchIntent)
+
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 }
