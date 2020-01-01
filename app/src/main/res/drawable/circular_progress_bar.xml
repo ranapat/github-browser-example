@@ -10,7 +10,7 @@
             android:angle="0"
             android:type="sweep"
             android:thickness="2dp">
-            <solid android:color="@color/primary_font_color"/>
+            <solid android:color="@android:color/transparent"/>
         </shape>
 
     </item>

@@ -19,8 +19,11 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
     }
 
     fun setUser(it: User) {
-        if (!users.contains(it)) {
+        val index = findIndexById(it)
+        if (index == -1) {
             users.add(it)
+        } else {
+            users[index] = it
         }
         notifyItemChanged(users.indexOf(it), POPULATE_USER)
     }
@@ -58,6 +61,15 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
 
     override fun getItemCount(): Int {
         return users.size
+    }
+
+    private fun findIndexById(user: User): Int {
+        for ((index, value) in users.withIndex()) {
+            if (value.id == user.id) {
+                return index
+            }
+        }
+        return -1
     }
 
     private fun initializeEventHandlers(viewHolder: ItemViewHolder) {

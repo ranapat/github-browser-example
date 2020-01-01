@@ -1,10 +1,8 @@
 package org.ranapat.examples.githubbrowser.ui.main
 
-import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProviders
@@ -25,7 +23,6 @@ import org.ranapat.examples.githubbrowser.ui.util.hideSoftKeyboard
 import org.ranapat.examples.githubbrowser.ui.util.startCleanRedirect
 import org.ranapat.examples.githubbrowser.ui.util.startRedirect
 import org.ranapat.examples.githubbrowser.ui.util.subscribeUiThread
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class MainActivity : BaseActivity() {
@@ -40,7 +37,6 @@ class MainActivity : BaseActivity() {
 
     private lateinit var configuration: Configuration
     private lateinit var organization: Organization
-    private lateinit var users: List<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
@@ -104,10 +100,12 @@ class MainActivity : BaseActivity() {
         )
         subscription(viewModel.users
                 .subscribeUiThread(this) {
-                    users = it
                     listAdapter.setUsers(it)
-
-                    Timber.e("all users : ${it.size}")
+                }
+        )
+        subscription(viewModel.user
+                .subscribeUiThread(this) {
+                    listAdapter.setUser(it)
                 }
         )
 

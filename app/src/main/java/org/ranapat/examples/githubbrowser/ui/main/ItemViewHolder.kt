@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_user_member_list.view.*
@@ -17,9 +18,9 @@ class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private var user: User? = null
 
     private val extraItemSpacing: View = view.extraItemSpacing
-    private val icon: ImageView = view.icon
-    private val title: TextView = view.title
-    private val status: TextView = view.status
+    private val avatar: ImageView = view.avatar
+    private val login: TextView = view.login
+    private val date: TextView = view.date
     private val progressBar: ProgressBar = view.progressBar
 
     fun bind(
@@ -33,15 +34,24 @@ class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     fun setUser(user: User) {
         this.user = user
 
-        title.text = user.login
-        status.text = user.type
+        login.text = user.login
+
+        val dateString = dateToString(user.details?.remoteCreatedAt)
+        if (dateString.isNotEmpty()) {
+            progressBar.isVisible = false
+            date.isVisible = true
+        } else {
+            progressBar.isVisible = true
+            date.isVisible = false
+        }
+        date.text = dateString
 
         setContentDescriptions(user)
         setAvatar(user)
     }
 
     private fun setContentDescriptions(user: User) {
-        icon.contentDescription = view.context.getString(string.user_member_list_icon) + " " + user.login
+        avatar.contentDescription = view.context.getString(string.user_member_list_icon) + " " + user.login
     }
 
     private fun setPosition(position: Int) {
@@ -51,7 +61,7 @@ class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private fun setAvatar(user: User) {
         Glide.with(view)
                 .load(user.avatarUrl)
-                .into(icon)
+                .into(avatar)
     }
 
     private fun dateToString(date: Date?): String {
