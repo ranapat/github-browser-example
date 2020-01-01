@@ -11,4 +11,21 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="Widget.App.TextView" parent="">
+        <item name="android:textColor">@color/primary_font_color</item>
+        <item name="android:textSize">@dimen/font_size</item>
+    </style>
+
+    <style name="Widget.App.TextView.Default">
+        <item name="android:textSize">@dimen/font_size</item>
+    </style>
+
+    <style name="Widget.App.TextView.Large">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Widget.App.TextView.Small">
+        <item name="android:textSize">@dimen/smaller_font_size</item>
+    </style>
+
 </resources>

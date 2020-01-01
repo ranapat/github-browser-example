@@ -32,6 +32,7 @@ public class MainViewModel extends BaseViewModel {
     final public PublishSubject<String> state;
     final public PublishSubject<Class<? extends AppCompatActivity>> next;
     final public PublishSubject<Organization> organization;
+    final public PublishSubject<Boolean> undefinedOrganization;
 
     final private ConfigurationObservable configurationObservable;
     final private OrganizationObservable organizationObservable;
@@ -54,6 +55,7 @@ public class MainViewModel extends BaseViewModel {
         state = PublishSubject.create();
         next = PublishSubject.create();
         organization = PublishSubject.create();
+        undefinedOrganization = PublishSubject.create();
     }
 
     public MainViewModel() {
@@ -87,6 +89,7 @@ public class MainViewModel extends BaseViewModel {
 
     public void searchForOrganization(final String login) {
         state.onNext(LOADING);
+        undefinedOrganization.onNext(false);
 
         subscription(organizationObservable
                 .fetchByLogin(login)
@@ -101,7 +104,7 @@ public class MainViewModel extends BaseViewModel {
                     @Override
                     public void accept(final Throwable throwable) {
                         if (ExceptionChecker.isLast(throwable, OrganizationUndefinedException.class)) {
-                            messages.error.onNext(new ParameterizedMessage(R.string.error_organization_undefined));
+                            undefinedOrganization.onNext(true);
                         } else {
                             messages.error.onNext(new ParameterizedMessage(R.string.unexpected_error));
                         }

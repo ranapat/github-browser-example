@@ -44,7 +44,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initializeUi() {
-        //
+        undefinedOrganization.isVisible = true
     }
 
     override fun initializeListeners() {
@@ -77,6 +77,13 @@ class MainActivity : BaseActivity() {
                     organization = it
                 }
         )
+        subscription(viewModel.undefinedOrganization
+                .subscribeUiThread(this) {
+                    if (it) {
+                        undefinedOrganizationContainer.isVisible = true
+                    }
+                }
+        )
 
         search.textChangedListener {
             afterTextChanged {
@@ -93,6 +100,8 @@ class MainActivity : BaseActivity() {
             false
         })
         clear.setOnClickListener {
+            undefinedOrganizationContainer.isVisible = false
+
             search.setText("")
             activity.hideSoftKeyboard()
         }
@@ -100,10 +109,12 @@ class MainActivity : BaseActivity() {
 
     private fun loading() {
         loading.isVisible = true
+        undefinedOrganizationContainer.isVisible = false
     }
 
     private fun ready() {
         loading.isVisible = false
+        undefinedOrganizationContainer.isVisible = false
     }
 
     private fun error() {

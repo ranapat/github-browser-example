@@ -49,6 +49,21 @@
         app:layout_constraintEnd_toEndOf="@id/search"
         app:layout_constraintTop_toTopOf="@id/search" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/undefinedOrganizationContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search">
+        <ViewStub
+            android:id="@+id/undefinedOrganization"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/layout_organization_not_found" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <LinearLayout
         android:id="@+id/loading"
         android:layout_width="0dp"
