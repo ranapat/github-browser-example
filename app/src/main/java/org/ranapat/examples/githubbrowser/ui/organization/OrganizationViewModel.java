@@ -49,9 +49,8 @@ public class OrganizationViewModel extends BaseViewModel {
     final public PublishSubject<Class<? extends AppCompatActivity>> next;
     final public PublishSubject<Configuration> configuration;
     final public PublishSubject<Organization> organization;
-    final public PublishSubject<List<User>> users;
-    final public PublishSubject<User> user;
-    final public PublishSubject<User> incomplete;
+    final public PublishSubject<List<ListUser>> users;
+    final public PublishSubject<ListUser> user;
     final public PublishSubject<String> sort;
     final public PublishSubject<String> limit;
 
@@ -66,7 +65,7 @@ public class OrganizationViewModel extends BaseViewModel {
     private String currentSort;
     private String currentLimit;
     private List<User> usersList;
-    private List<User> normalizedUsers;
+    private List<ListUser> normalizedUsers;
 
     public OrganizationViewModel(
             final NetworkManager networkManager,
@@ -89,7 +88,6 @@ public class OrganizationViewModel extends BaseViewModel {
         organization = PublishSubject.create();
         users = PublishSubject.create();
         user = PublishSubject.create();
-        incomplete = PublishSubject.create();
         sort = PublishSubject.create();
         limit = PublishSubject.create();
     }
@@ -142,7 +140,6 @@ public class OrganizationViewModel extends BaseViewModel {
                         } else {
                             messages.error.onNext(new ParameterizedMessage(R.string.unexpected_error));
                         }
-                        users.onNext(new ArrayList<User>());
                         state.onNext(ERROR);
                     }
                 })
@@ -195,16 +192,21 @@ public class OrganizationViewModel extends BaseViewModel {
     }
 
     private void normalizeUsers() {
-        normalizedUsers = new ArrayList<>(usersList);
+        normalizedUsers = new ArrayList<>();
+        for (final User user : usersList) {
+            normalizedUsers.add(new ListUser(user));
+        }
 
         final int positive = currentSort.equals(SORT_BY_NAME_ASC) ? 1 : -1;
         final int negative = -1 * positive;
-        final Comparator<User> comparator = new Comparator<User>() {
+        final Comparator<ListUser> comparator = new Comparator<ListUser>() {
             @Override
-            public int compare(final User o1, final User o2) {
-                if (o1.login.compareToIgnoreCase(o2.login) > 0) {
+            public int compare(final ListUser o1, final ListUser o2) {
+                final int index = o1.user.login.compareToIgnoreCase(o2.user.login);
+
+                if (index > 0) {
                     return positive;
-                } else if (o1.login.compareToIgnoreCase(o2.login) < 0) {
+                } else if (index < 0) {
                     return negative;
                 } else {
                     return 0;
@@ -234,21 +236,23 @@ public class OrganizationViewModel extends BaseViewModel {
     private void loadUserDetails() {
         final List<Maybe<User>> disposables = new ArrayList<>();
 
-        for (final User _user : normalizedUsers) {
+        for (final ListUser _user : normalizedUsers) {
             disposables.add(userObservable
-                    .fetchDetails(_user)
+                    .fetchDetails(_user.user)
                     .onErrorResumeNext(new Function<Throwable, MaybeSource<User>>() {
                         @Override
                         public MaybeSource<User> apply(final Throwable throwable) {
-                            incomplete.onNext(_user);
+                            _user.incomplete = true;
 
-                            return Maybe.just(_user);
+                            user.onNext(_user);
+
+                            return Maybe.just(_user.user);
                         }
                     })
                     .doOnSuccess(new Consumer<User>() {
                         @Override
                         public void accept(final User __user) {
-                            user.onNext(__user);
+                            //
                         }
                     })
             );

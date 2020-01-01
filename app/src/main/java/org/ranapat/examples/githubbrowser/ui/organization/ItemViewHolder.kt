@@ -9,13 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_user_member_list.view.*
 import org.ranapat.examples.githubbrowser.R.string
-import org.ranapat.examples.githubbrowser.data.entity.User
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-    private var user: User? = null
+    private var user: ListUser? = null
 
     private val extraItemSpacing: View = view.extraItemSpacing
     private val avatar: ImageView = view.avatar
@@ -25,59 +24,55 @@ class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val incomplete: ImageView = view.incomplete
 
     fun bind(
-            user: User,
-            position: Int,
-            incomplete: Boolean
+            user: ListUser,
+            position: Int
     ) {
         setUser(user)
         setPosition(position)
-        if (incomplete) {
-            setIncomplete()
-        }
     }
 
-    fun setUser(user: User) {
+    fun setUser(user: ListUser) {
         this.user = user
 
-        if (user.details != null) {
-            login.text = "${user.login} - ${user.details.name}"
+        if (user.user.details != null) {
+            login.text = "${user.user.login} - ${user.user.details.name}"
         } else {
-            login.text = user.login
+            login.text = user.user.login
         }
 
-        val dateString = dateToString(user.details?.remoteCreatedAt)
-        if (dateString.isNotEmpty()) {
-            progressBar.isVisible = false
-            date.isVisible = true
-            incomplete.isVisible = false
-        } else {
+        if (user.incomplete) {
             progressBar.isVisible = true
             date.isVisible = false
-            incomplete.isVisible = false
+            incomplete.isVisible = true
+        } else {
+            val dateString = dateToString(user.user.details?.remoteCreatedAt)
+            if (dateString.isNotEmpty()) {
+                progressBar.isVisible = false
+                date.isVisible = true
+                incomplete.isVisible = false
+            } else {
+                progressBar.isVisible = true
+                date.isVisible = false
+                incomplete.isVisible = false
+            }
+            date.text = dateString
         }
-        date.text = dateString
 
         setContentDescriptions(user)
         setAvatar(user)
     }
 
-    fun setIncomplete() {
-        progressBar.isVisible = true
-        date.isVisible = false
-        incomplete.isVisible = true
-    }
-
-    private fun setContentDescriptions(user: User) {
-        avatar.contentDescription = view.context.getString(string.user_member_list_icon) + " " + user.login
+    private fun setContentDescriptions(user: ListUser) {
+        avatar.contentDescription = view.context.getString(string.user_member_list_icon) + " " + user.user.login
     }
 
     private fun setPosition(position: Int) {
         extraItemSpacing.visibility = if (position == 0) View.VISIBLE else View.GONE
     }
 
-    private fun setAvatar(user: User) {
+    private fun setAvatar(user: ListUser) {
         Glide.with(view)
-                .load(user.avatarUrl)
+                .load(user.user.avatarUrl)
                 .into(avatar)
     }
 

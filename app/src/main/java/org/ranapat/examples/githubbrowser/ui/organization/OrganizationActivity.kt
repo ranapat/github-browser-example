@@ -152,11 +152,6 @@ class OrganizationActivity : BaseActivity() {
                     listAdapter.setUser(it)
                 }
         )
-        subscription(viewModel.incomplete
-                .subscribeUiThread(this) {
-                    listAdapter.setIncomplete(it)
-                }
-        )
         subscription(viewModel.sort
                 .subscribeUiThread(this) {
                     sort = it
