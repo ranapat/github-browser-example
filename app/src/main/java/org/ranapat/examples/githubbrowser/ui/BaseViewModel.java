@@ -36,7 +36,7 @@ public abstract class BaseViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
-        compositeDisposable.clear();
+        clearDisposables();
     }
 
     public void onNetworkStatus() {
@@ -53,6 +53,10 @@ public abstract class BaseViewModel extends ViewModel {
 
     protected void subscription(final Disposable disposable) {
         compositeDisposable.add(disposable);
+    }
+
+    protected void clearDisposables() {
+        compositeDisposable.clear();
     }
 
     protected boolean isOnline() {
