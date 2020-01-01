@@ -54,6 +54,21 @@ public class DataObservable {
         }).subscribeOn(Schedulers.io());
     }
 
+    public Maybe<User> fetchById(final long id) {
+        return Maybe.fromCallable(new Callable<User>() {
+            @Override
+            public User call() {
+                final User user = userDao.fetchById(id);
+
+                user.details = userDetailsDao.fetchByUserId(user.id);
+                user.urls = userUrlsDao.fetchByUserId(user.id);
+
+                return user;
+
+            }
+        }).subscribeOn(Schedulers.io());
+    }
+
     public Maybe<User> store(final User user) {
         return Maybe.fromCallable(new Callable<User>() {
             @Override

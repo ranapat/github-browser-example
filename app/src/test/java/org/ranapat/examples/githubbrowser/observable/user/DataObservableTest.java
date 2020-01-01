@@ -20,6 +20,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,6 +65,8 @@ public class DataObservableTest {
         dataObservable.fetchAllByOrganization(organization).test().awaitTerminalEvent();
 
         verify(userDao, times(1)).fetchByOrganizationId(1);
+        verify(userDetailsDao, times(1)).fetchByUserId(anyLong());
+        verify(userUrlsDao, times(1)).fetchByUserId(anyLong());
     }
 
     @Test
@@ -99,6 +102,58 @@ public class DataObservableTest {
         );
 
         final TestObserver<List<User>> testObserver = dataObservable.fetchAllByOrganization(organization).test();
+
+        testObserver.awaitTerminalEvent();
+        testObserver.assertNoValues();
+    }
+
+    @Test
+    public void shouldCallFetchById() {
+        final UserDao userDao = mock(UserDao.class);
+        final UserDetailsDao userDetailsDao = mock(UserDetailsDao.class);
+        final UserUrlsDao userUrlsDao = mock(UserUrlsDao.class);
+        final DataObservable dataObservable = new DataObservable(
+                userDao, userDetailsDao, userUrlsDao
+        );
+
+        when(userDao.fetchById(1)).thenReturn(mock(User.class));
+
+        dataObservable.fetchById(1).test().awaitTerminalEvent();
+
+        verify(userDao, times(1)).fetchById(1);
+        verify(userDetailsDao, times(1)).fetchByUserId(anyLong());
+        verify(userUrlsDao, times(1)).fetchByUserId(anyLong());
+    }
+
+    @Test
+    public void shouldEmitFromFetchByIdOnce() {
+        final User user = mock(User.class);
+        final UserDao userDao = mock(UserDao.class);
+        final UserDetailsDao userDetailsDao = mock(UserDetailsDao.class);
+        final UserUrlsDao userUrlsDao = mock(UserUrlsDao.class);
+        when(userDao.fetchById(1)).thenReturn(user);
+        final DataObservable dataObservable = new DataObservable(
+                userDao, userDetailsDao, userUrlsDao
+        );
+
+        final TestObserver<User> testObserver = dataObservable.fetchById(1).test();
+
+        testObserver.awaitTerminalEvent();
+        assertThat(testObserver.valueCount(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0), is(equalTo(user)));
+    }
+
+    @Test
+    public void shouldHandleNullFromFetchById() {
+        final UserDao userDao = mock(UserDao.class);
+        final UserDetailsDao userDetailsDao = mock(UserDetailsDao.class);
+        final UserUrlsDao userUrlsDao = mock(UserUrlsDao.class);
+        when(userDao.fetchById(1)).thenReturn(null);
+        final DataObservable dataObservable = new DataObservable(
+                userDao, userDetailsDao, userUrlsDao
+        );
+
+        final TestObserver<User> testObserver = dataObservable.fetchById(1).test();
 
         testObserver.awaitTerminalEvent();
         testObserver.assertNoValues();
