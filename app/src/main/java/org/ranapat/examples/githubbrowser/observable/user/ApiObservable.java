@@ -37,4 +37,17 @@ public class ApiObservable {
         }).subscribeOn(Schedulers.io());
     }
 
+    public Maybe<User> fetchDetails(final String userInfoUrl, final User user) {
+        return Maybe.fromCallable(new Callable<User>() {
+            @Override
+            public User call() {
+                try {
+                    return userRao.fetchDetails(userInfoUrl, user);
+                } catch (final Exception e) {
+                    return null;
+                }
+            }
+        }).subscribeOn(Schedulers.io());
+    }
+
 }
