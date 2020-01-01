@@ -168,7 +168,7 @@ public class MainViewModel extends BaseViewModel {
                     @Override
                     public void accept(final Boolean aBoolean) {
                         final User _user = usersList.get(0);
-                        _user.details = new UserDetails(_user.id, "", "", "", "", "", "", "", new Date(), new Date());
+                        _user.details = new UserDetails(_user.id, "", "", "", "", "", "", false, new Date(), new Date());
 
                         user.onNext(_user);
                     }

@@ -22,8 +22,8 @@ public class UserDetailsTest {
                 "blog",
                 "location",
                 "email",
-                "hireable",
                 "bio",
+                true,
                 date1,
                 date2
         );
@@ -33,8 +33,8 @@ public class UserDetailsTest {
         assertThat(userDetails.blog, is(equalTo("blog")));
         assertThat(userDetails.location, is(equalTo("location")));
         assertThat(userDetails.email, is(equalTo("email")));
-        assertThat(userDetails.hireable, is(equalTo("hireable")));
         assertThat(userDetails.bio, is(equalTo("bio")));
+        assertThat(userDetails.hireable, is(equalTo(true)));
         assertThat(userDetails.remoteCreatedAt, is(equalTo(date1)));
         assertThat(userDetails.remoteUpdatedAt, is(equalTo(date2)));
     }

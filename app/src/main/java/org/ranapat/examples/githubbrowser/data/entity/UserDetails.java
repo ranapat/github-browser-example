@@ -47,12 +47,12 @@ public class UserDetails implements DataEntity {
     public final String email;
 
     @Nullable
-    @ColumnInfo(name = "hireable")
-    public final String hireable;
-
-    @Nullable
     @ColumnInfo(name = "bio")
     public final String bio;
+
+    @Nullable
+    @ColumnInfo(name = "hireable")
+    public final boolean hireable;
 
     @Nullable
     @ColumnInfo(name = "remote_created_at")
@@ -69,8 +69,8 @@ public class UserDetails implements DataEntity {
             final String blog,
             final String location,
             final String email,
-            final String hireable,
             final String bio,
+            final boolean hireable,
             final Date remoteCreatedAt,
             final Date remoteUpdatedAt
     ) {
@@ -80,8 +80,8 @@ public class UserDetails implements DataEntity {
         this.blog = blog;
         this.location = location;
         this.email = email;
-        this.hireable = hireable;
         this.bio = bio;
+        this.hireable = hireable;
         this.remoteCreatedAt = remoteCreatedAt;
         this.remoteUpdatedAt = remoteUpdatedAt;
     }

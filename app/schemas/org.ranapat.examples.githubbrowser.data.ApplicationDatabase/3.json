@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "70f86a3463a6f82ea14e65593dd5522a",
+    "identityHash": "04db7a022ed5a1b10945b7c4d62affa8",
     "entities": [
       {
         "tableName": "configuration",
@@ -165,7 +165,7 @@
       },
       {
         "tableName": "user_details",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `name` TEXT, `company` TEXT, `blog` TEXT, `location` TEXT, `email` TEXT, `hireable` TEXT, `bio` TEXT, `remote_created_at` INTEGER, `remote_updated_at` INTEGER, PRIMARY KEY(`user_id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `name` TEXT, `company` TEXT, `blog` TEXT, `location` TEXT, `email` TEXT, `bio` TEXT, `hireable` INTEGER NOT NULL, `remote_created_at` INTEGER, `remote_updated_at` INTEGER, PRIMARY KEY(`user_id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "userId",
@@ -204,16 +204,16 @@
             "notNull": false
           },
           {
-            "fieldPath": "hireable",
-            "columnName": "hireable",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
             "fieldPath": "bio",
             "columnName": "bio",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "hireable",
+            "columnName": "hireable",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "remoteCreatedAt",
@@ -357,7 +357,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '70f86a3463a6f82ea14e65593dd5522a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '04db7a022ed5a1b10945b7c4d62affa8')"
     ]
   }
 }
