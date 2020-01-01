@@ -39,7 +39,11 @@ class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     fun setUser(user: User) {
         this.user = user
 
-        login.text = user.login
+        if (user.details != null) {
+            login.text = "${user.login} - ${user.details.name}"
+        } else {
+            login.text = user.login
+        }
 
         val dateString = dateToString(user.details?.remoteCreatedAt)
         if (dateString.isNotEmpty()) {
