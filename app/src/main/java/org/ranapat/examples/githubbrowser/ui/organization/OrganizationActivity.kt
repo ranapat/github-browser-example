@@ -19,6 +19,7 @@ import org.ranapat.examples.githubbrowser.ui.BaseActivity
 import org.ranapat.examples.githubbrowser.ui.common.IntentParameters
 import org.ranapat.examples.githubbrowser.ui.common.OnItemListener
 import org.ranapat.examples.githubbrowser.ui.common.States.*
+import org.ranapat.examples.githubbrowser.ui.organization.OrganizationViewModel.*
 import org.ranapat.examples.githubbrowser.ui.util.hideSoftKeyboard
 import org.ranapat.examples.githubbrowser.ui.util.startCleanRedirect
 import org.ranapat.examples.githubbrowser.ui.util.startRedirect
@@ -32,7 +33,8 @@ class OrganizationActivity : BaseActivity() {
     override val layoutResource: Int = R.layout.activity_organization
     override fun baseViewModel() = viewModel
 
-    private var upToLimit: Boolean = true
+    private var sort: String = ""
+    private var limit: String = ""
 
     private val listAdapter: ListAdapter
         get() = recyclerView.adapter as ListAdapter
@@ -57,8 +59,11 @@ class OrganizationActivity : BaseActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.getItem(2)?.isEnabled = !upToLimit
-        menu?.getItem(3)?.isEnabled = upToLimit
+        menu?.getItem(0)?.isEnabled = sort != SORT_BY_NAME_ASC
+        menu?.getItem(1)?.isEnabled = sort != SORT_BY_NAME_DESC
+
+        menu?.getItem(2)?.isEnabled = limit != UP_TO_LIMIT
+        menu?.getItem(3)?.isEnabled = limit != NO_LIMIT
 
         return super.onPrepareOptionsMenu(menu)
     }
@@ -74,8 +79,8 @@ class OrganizationActivity : BaseActivity() {
             R.id.show_up_to_limit -> {
                 viewModel.showUpToLimit()
             }
-            R.id.show_up_to_no_limit -> {
-                viewModel.showUpToNoLimit()
+            R.id.no_limit -> {
+                viewModel.showNoLimit()
             }
         }
         return true
@@ -85,8 +90,6 @@ class OrganizationActivity : BaseActivity() {
         super.initialize()
 
         recyclerView.adapter = ListAdapter()
-
-        invalidateOptionsMenu()
     }
 
     override fun initializeUi() {
@@ -152,6 +155,20 @@ class OrganizationActivity : BaseActivity() {
         subscription(viewModel.incomplete
                 .subscribeUiThread(this) {
                     listAdapter.setIncomplete(it)
+                }
+        )
+        subscription(viewModel.sort
+                .subscribeUiThread(this) {
+                    sort = it
+
+                    invalidateOptionsMenu()
+                }
+        )
+        subscription(viewModel.limit
+                .subscribeUiThread(this) {
+                    limit = it
+
+                    invalidateOptionsMenu()
                 }
         )
 

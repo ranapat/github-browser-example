@@ -22,6 +22,8 @@ import org.ranapat.instancefactory.Fi;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +39,12 @@ import static org.ranapat.examples.githubbrowser.ui.common.States.LOADING;
 import static org.ranapat.examples.githubbrowser.ui.common.States.READY;
 
 public class OrganizationViewModel extends BaseViewModel {
+    public static final String SORT_BY_NAME_ASC = "sortByNameAsc";
+    public static final String SORT_BY_NAME_DESC = "sortByNameDesc";
+
+    public static final String UP_TO_LIMIT = "upToLimit";
+    public static final String NO_LIMIT = "noLimit";
+
     final public PublishSubject<String> state;
     final public PublishSubject<Class<? extends AppCompatActivity>> next;
     final public PublishSubject<Configuration> configuration;
@@ -44,6 +52,8 @@ public class OrganizationViewModel extends BaseViewModel {
     final public PublishSubject<List<User>> users;
     final public PublishSubject<User> user;
     final public PublishSubject<User> incomplete;
+    final public PublishSubject<String> sort;
+    final public PublishSubject<String> limit;
 
     final private ConfigurationObservable configurationObservable;
     final private OrganizationObservable organizationObservable;
@@ -53,7 +63,10 @@ public class OrganizationViewModel extends BaseViewModel {
 
     private Configuration currentConfiguration;
     private Organization currentOrganization;
+    private String currentSort;
+    private String currentLimit;
     private List<User> usersList;
+    private List<User> normalizedUsers;
 
     public OrganizationViewModel(
             final NetworkManager networkManager,
@@ -77,6 +90,8 @@ public class OrganizationViewModel extends BaseViewModel {
         users = PublishSubject.create();
         user = PublishSubject.create();
         incomplete = PublishSubject.create();
+        sort = PublishSubject.create();
+        limit = PublishSubject.create();
     }
 
     public OrganizationViewModel() {
@@ -95,6 +110,8 @@ public class OrganizationViewModel extends BaseViewModel {
         this.currentOrganization = currentOrganization;
         organization.onNext(currentOrganization);
 
+        resetSortAndLimit();
+
         subscription(configurationObservable
                 .fetch()
                 .flatMap(new Function<Configuration, MaybeSource<List<User>>>() {
@@ -111,18 +128,9 @@ public class OrganizationViewModel extends BaseViewModel {
                     @Override
                     public void accept(final List<User> _users) {
                         usersList = _users;
+                        normalizeUsers();
 
-                        users.onNext(_users);
                         state.onNext(READY);
-
-                        subscription(Maybe.just(true)
-                                .delay(250, TimeUnit.MILLISECONDS)
-                                .subscribe(new Consumer<Boolean>() {
-                                    @Override
-                                    public void accept(final Boolean aBoolean) {
-                                        loadUserDetails();
-                                    }
-                                }));
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -142,19 +150,31 @@ public class OrganizationViewModel extends BaseViewModel {
     }
 
     public void sortByNameAsc() {
+        currentSort = SORT_BY_NAME_ASC;
+        sort.onNext(currentSort);
 
+        normalizeUsers();
     }
 
     public void sortByNameDesc() {
+        currentSort = SORT_BY_NAME_DESC;
+        sort.onNext(currentSort);
 
+        normalizeUsers();
     }
 
     public void showUpToLimit() {
+        currentLimit = UP_TO_LIMIT;
+        limit.onNext(currentLimit);
 
+        normalizeUsers();
     }
 
-    public void showUpToNoLimit() {
+    public void showNoLimit() {
+        currentLimit = NO_LIMIT;
+        limit.onNext(currentLimit);
 
+        normalizeUsers();
     }
 
     public void onItemClickListener(final int position) {
@@ -166,10 +186,55 @@ public class OrganizationViewModel extends BaseViewModel {
         //
     }
 
+    private void resetSortAndLimit() {
+        currentSort = SORT_BY_NAME_ASC;
+        currentLimit = UP_TO_LIMIT;
+
+        sort.onNext(currentSort);
+        limit.onNext(currentLimit);
+    }
+
+    private void normalizeUsers() {
+        normalizedUsers = new ArrayList<>(usersList);
+
+        final int positive = currentSort.equals(SORT_BY_NAME_ASC) ? 1 : -1;
+        final int negative = -1 * positive;
+        final Comparator<User> comparator = new Comparator<User>() {
+            @Override
+            public int compare(final User o1, final User o2) {
+                if (o1.login.compareToIgnoreCase(o2.login) > 0) {
+                    return positive;
+                } else if (o1.login.compareToIgnoreCase(o2.login) < 0) {
+                    return negative;
+                } else {
+                    return 0;
+                }
+            }
+        };
+
+        Collections.sort(normalizedUsers, comparator);
+
+        if (currentLimit.equals(UP_TO_LIMIT)) {
+            normalizedUsers = normalizedUsers.subList(0, currentConfiguration.defaultMembersInOrganizationPerPage);
+        }
+
+        users.onNext(normalizedUsers);
+
+        clearDisposables();
+        subscription(Maybe.just(true)
+                .delay(250, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(final Boolean aBoolean) {
+                        loadUserDetails();
+                    }
+                }));
+    }
+
     private void loadUserDetails() {
         final List<Maybe<User>> disposables = new ArrayList<>();
 
-        for (final User _user : usersList) {
+        for (final User _user : normalizedUsers) {
             disposables.add(userObservable
                     .fetchDetails(_user)
                     .onErrorResumeNext(new Function<Throwable, MaybeSource<User>>() {

@@ -11,7 +11,7 @@
         android:id="@+id/show_up_to_limit"
         android:title="@string/user_member_list_up_to_limit" />
     <item
-        android:id="@+id/show_up_to_no_limit"
-        android:title="@string/user_member_list_up_to_no_limit" />
+        android:id="@+id/no_limit"
+        android:title="@string/user_member_list_no_limit" />
 
 </menu>

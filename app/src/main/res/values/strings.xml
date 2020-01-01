@@ -26,7 +26,7 @@
     <string name="user_member_list_sort_name_asc">sort by name asc</string>
     <string name="user_member_list_sort_name_desc">sort by name desc</string>
     <string name="user_member_list_up_to_limit">limit results to predefined</string>
-    <string name="user_member_list_up_to_no_limit">limit all possible results</string>
+    <string name="user_member_list_no_limit">limit all possible results</string>
 
     <string name="retry">retry</string>
 </resources>
