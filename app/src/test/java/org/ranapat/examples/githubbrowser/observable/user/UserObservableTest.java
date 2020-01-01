@@ -7,8 +7,10 @@ import org.mockito.stubbing.Answer;
 import org.ranapat.examples.githubbrowser.data.entity.Configuration;
 import org.ranapat.examples.githubbrowser.data.entity.Organization;
 import org.ranapat.examples.githubbrowser.data.entity.User;
+import org.ranapat.examples.githubbrowser.data.entity.UserDetails;
 import org.ranapat.examples.githubbrowser.observable.ExceptionChecker;
 import org.ranapat.examples.githubbrowser.observable.configuration.ConfigurationObservable;
+import org.ranapat.examples.githubbrowser.observable.exceptions.UserUndefinedException;
 import org.ranapat.examples.githubbrowser.observable.exceptions.UsersUndefinedException;
 import org.ranapat.instancefactory.InstanceFactory;
 
@@ -22,6 +24,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -490,6 +493,217 @@ public class UserObservableTest {
         assertThat(testObserver.values().get(0).size(), is(equalTo(2)));
         assertThat(testObserver.values().get(0).get(0), is(equalTo(user1)));
         assertThat(testObserver.values().get(0).get(1), is(equalTo(user2)));
+    }
+
+    @Test
+    public void shouldThrowExceptionOnEmptyResultCase1() {
+        final Configuration configuration = new Configuration(1, 1, null, null, "url", null);
+        final User user = new User(1, 2, null, null, null, false, null);
+
+        final ApiObservable apiObservable = mock(ApiObservable.class);
+        final DataObservable dataObservable = mock(DataObservable.class);
+        final ConfigurationObservable configurationObservable = mock(ConfigurationObservable.class);
+
+        when(apiObservable.fetchDetails("url", user)).thenReturn(Maybe.<User>empty());
+        when(dataObservable.fetchById(1)).thenReturn(Maybe.<User>empty());
+        when(configurationObservable.fetch()).thenReturn(Maybe.just(configuration));
+
+        final UserObservable userObservable = new UserObservable(
+                apiObservable, dataObservable, configurationObservable
+        );
+
+        final TestObserver<User> testObserver = userObservable.fetchDetails(user).test();
+
+        testObserver.awaitTerminalEvent();
+        assertThat(ExceptionChecker.isLast(testObserver.errors().get(0), UserUndefinedException.class), is(equalTo(true)));
+    }
+
+    @Test
+    public void shouldThrowExceptionOnEmptyResultCase2() {
+        final Configuration configuration = new Configuration(1, 1, null, null, "url", null);
+        final User user = new User(1, 2, null, null, null, false, null);
+        final User mockedUser = mock(User.class);
+
+        final ApiObservable apiObservable = mock(ApiObservable.class);
+        final DataObservable dataObservable = mock(DataObservable.class);
+        final ConfigurationObservable configurationObservable = mock(ConfigurationObservable.class);
+
+        when(apiObservable.fetchDetails("url", user)).thenReturn(Maybe.<User>empty());
+        when(dataObservable.fetchById(1)).thenReturn(Maybe.just(mockedUser));
+        when(configurationObservable.fetch()).thenReturn(Maybe.just(configuration));
+
+        final UserObservable userObservable = new UserObservable(
+                apiObservable, dataObservable, configurationObservable
+        );
+
+        final TestObserver<User> testObserver = userObservable.fetchDetails(user).test();
+
+        testObserver.awaitTerminalEvent();
+        assertThat(ExceptionChecker.isLast(testObserver.errors().get(0), UserUndefinedException.class), is(equalTo(true)));
+    }
+
+    @Test
+    public void shouldThrowExceptionOnEmptyResultCase3() {
+        final Configuration configuration = new Configuration(1, 1, null, null, "url", null);
+        final User user = new User(1, 2, null, null, null, false, null);
+        final User mockedUser = mock(User.class);
+
+        final ApiObservable apiObservable = mock(ApiObservable.class);
+        final DataObservable dataObservable = mock(DataObservable.class);
+        final ConfigurationObservable configurationObservable = mock(ConfigurationObservable.class);
+
+        when(mockedUser.isUpToDate()).thenReturn(true);
+        when(apiObservable.fetchDetails("url", user)).thenReturn(Maybe.<User>empty());
+        when(dataObservable.fetchById(1)).thenReturn(Maybe.just(mockedUser));
+        when(configurationObservable.fetch()).thenReturn(Maybe.just(configuration));
+
+        final UserObservable userObservable = new UserObservable(
+                apiObservable, dataObservable, configurationObservable
+        );
+
+        final TestObserver<User> testObserver = userObservable.fetchDetails(user).test();
+
+        testObserver.awaitTerminalEvent();
+        assertThat(ExceptionChecker.isLast(testObserver.errors().get(0), UserUndefinedException.class), is(equalTo(true)));
+    }
+
+    @Test
+    public void shouldEmitDirectlyCase1() {
+        final Configuration configuration = new Configuration(1, 1, null, null, "url", null);
+        final User user = mock(User.class);
+        user.details = mock(UserDetails.class);
+
+        final ApiObservable apiObservable = mock(ApiObservable.class);
+        final DataObservable dataObservable = mock(DataObservable.class);
+        final ConfigurationObservable configurationObservable = mock(ConfigurationObservable.class);
+
+        when(user.isUpToDate()).thenReturn(true);
+        when(apiObservable.fetchDetails("url", user)).thenReturn(Maybe.<User>empty());
+        when(dataObservable.fetchById(anyLong())).thenReturn(Maybe.<User>empty());
+        when(configurationObservable.fetch()).thenReturn(Maybe.just(configuration));
+
+        final UserObservable userObservable = new UserObservable(
+                apiObservable, dataObservable, configurationObservable
+        );
+
+        final TestObserver<User> testObserver = userObservable.fetchDetails(user).test();
+
+        testObserver.awaitTerminalEvent();
+        assertThat(testObserver.valueCount(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0), is(equalTo(user)));
+    }
+
+    @Test
+    public void shouldEmitDirectlyCase2() {
+        final Configuration configuration = new Configuration(1, 1, null, null, "url", null);
+        final User user = mock(User.class);
+        user.details = mock(UserDetails.class);
+
+        final ApiObservable apiObservable = mock(ApiObservable.class);
+        final DataObservable dataObservable = mock(DataObservable.class);
+        final ConfigurationObservable configurationObservable = mock(ConfigurationObservable.class);
+
+        when(user.isUpToDate()).thenReturn(false);
+        when(apiObservable.fetchDetails("url", user)).thenReturn(Maybe.<User>empty());
+        when(dataObservable.fetchById(anyLong())).thenReturn(Maybe.<User>empty());
+        when(configurationObservable.fetch()).thenReturn(Maybe.just(configuration));
+
+        final UserObservable userObservable = new UserObservable(
+                apiObservable, dataObservable, configurationObservable
+        );
+
+        final TestObserver<User> testObserver = userObservable.fetchDetails(user).test();
+
+        testObserver.awaitTerminalEvent();
+        assertThat(testObserver.valueCount(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0), is(equalTo(user)));
+    }
+
+    @Test
+    public void shouldEmitUpToDateUserFromData() {
+        final Configuration configuration = new Configuration(1, 1, null, null, "url", null);
+        final User user = new User(1, 2, null, null, null, false, null);
+        final User mockedUser = mock(User.class);
+        mockedUser.details = mock(UserDetails.class);
+
+        final ApiObservable apiObservable = mock(ApiObservable.class);
+        final DataObservable dataObservable = mock(DataObservable.class);
+        final ConfigurationObservable configurationObservable = mock(ConfigurationObservable.class);
+
+        when(mockedUser.isUpToDate()).thenReturn(true);
+        when(apiObservable.fetchDetails("url", user)).thenReturn(Maybe.<User>empty());
+        when(dataObservable.fetchById(1)).thenReturn(Maybe.just(mockedUser));
+        when(configurationObservable.fetch()).thenReturn(Maybe.just(configuration));
+
+        final UserObservable userObservable = new UserObservable(
+                apiObservable, dataObservable, configurationObservable
+        );
+
+        final TestObserver<User> testObserver = userObservable.fetchDetails(user).test();
+
+        testObserver.awaitTerminalEvent();
+        assertThat(testObserver.valueCount(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0), is(equalTo(mockedUser)));
+    }
+
+    @Test
+    public void shouldEmitUpToDateUserFromApi() {
+        final Configuration configuration = new Configuration(1, 1, null, null, "url", null);
+        final User user = new User(1, 2, null, null, null, false, null);
+        final User mockedUser = mock(User.class);
+        mockedUser.details = mock(UserDetails.class);
+
+        final ApiObservable apiObservable = mock(ApiObservable.class);
+        final DataObservable dataObservable = mock(DataObservable.class);
+        final ConfigurationObservable configurationObservable = mock(ConfigurationObservable.class);
+
+        when(mockedUser.isUpToDate()).thenReturn(true);
+        when(apiObservable.fetchDetails("url", user)).thenReturn(Maybe.just(mockedUser));
+        when(dataObservable.fetchById(1)).thenReturn(Maybe.<User>empty());
+        when(dataObservable.store(mockedUser)).thenReturn(Maybe.just(mockedUser));
+        when(configurationObservable.fetch()).thenReturn(Maybe.just(configuration));
+
+        final UserObservable userObservable = new UserObservable(
+                apiObservable, dataObservable, configurationObservable
+        );
+
+        final TestObserver<User> testObserver = userObservable.fetchDetails(user).test();
+
+        testObserver.awaitTerminalEvent();
+        assertThat(testObserver.valueCount(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0), is(equalTo(mockedUser)));
+    }
+
+    @Test
+    public void shouldEmitUpToDateUserFromApiThanData() {
+        final Configuration configuration = new Configuration(1, 1, null, null, "url", null);
+        final User user = new User(1, 2, null, null, null, false, null);
+        final User mockedUser1 = mock(User.class);
+        mockedUser1.details = mock(UserDetails.class);
+        final User mockedUser2 = mock(User.class);
+        mockedUser2.details = mock(UserDetails.class);
+
+        final ApiObservable apiObservable = mock(ApiObservable.class);
+        final DataObservable dataObservable = mock(DataObservable.class);
+        final ConfigurationObservable configurationObservable = mock(ConfigurationObservable.class);
+
+        when(mockedUser1.isUpToDate()).thenReturn(true);
+        when(mockedUser2.isUpToDate()).thenReturn(false);
+        when(apiObservable.fetchDetails("url", user)).thenReturn(Maybe.just(mockedUser1));
+        when(dataObservable.fetchById(1)).thenReturn(Maybe.just(mockedUser2));
+        when(dataObservable.store(mockedUser1)).thenReturn(Maybe.just(mockedUser1));
+        when(dataObservable.store(mockedUser2)).thenReturn(Maybe.just(mockedUser2));
+        when(configurationObservable.fetch()).thenReturn(Maybe.just(configuration));
+
+        final UserObservable userObservable = new UserObservable(
+                apiObservable, dataObservable, configurationObservable
+        );
+
+        final TestObserver<User> testObserver = userObservable.fetchDetails(user).test();
+
+        testObserver.awaitTerminalEvent();
+        assertThat(testObserver.valueCount(), is(equalTo(1)));
+        assertThat(testObserver.values().get(0), is(equalTo(mockedUser1)));
     }
 
 }

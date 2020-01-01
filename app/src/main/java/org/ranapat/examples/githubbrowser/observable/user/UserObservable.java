@@ -120,6 +120,7 @@ public class UserObservable {
                         return user.isUpToDate() && user.details != null;
                     }
                 })
+                .concatWith(direct)
                 .concatWith(data)
                 .firstElement()
                 .doOnEvent(new BiConsumer<User, Throwable>() {
