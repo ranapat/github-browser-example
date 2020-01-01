@@ -24,6 +24,19 @@
     <dimen name="global_spacing_m">32dp</dimen>
     <dimen name="global_spacing_l">48dp</dimen>
 
+    <dimen name="toolbar_width">0dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
+
+    <dimen name="top_menu_outline_spacing">16dp</dimen>
+    <dimen name="top_menu_outline_margin">18dp</dimen>
+    <dimen name="top_menu_button_padding">3dp</dimen>
+    <dimen name="top_menu_button_wrapper_spacing">13dp</dimen>
+    <dimen name="top_menu_label_font_size">20sp</dimen>
+    <dimen name="top_menu_label_font_line_spacing_extra">12sp</dimen>
+    <dimen name="top_menu_label_spacing">64dp</dimen>
+    <dimen name="top_menu_label_spacing_shifted_by_image">104dp</dimen>
+
     <dimen name="list_image_width">40dp</dimen>
     <dimen name="list_image_height">40dp</dimen>
     <dimen name="list_item_height">64dp</dimen>

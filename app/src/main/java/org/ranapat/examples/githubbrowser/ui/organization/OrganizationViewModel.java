@@ -89,10 +89,11 @@ public class OrganizationViewModel extends BaseViewModel {
         );
     }
 
-    public void initialize(final Organization organization) {
+    public void initialize(final Organization currentOrganization) {
         state.onNext(LOADING);
 
-        currentOrganization = organization;
+        this.currentOrganization = currentOrganization;
+        organization.onNext(currentOrganization);
 
         subscription(configurationObservable
                 .fetch()
@@ -138,6 +139,22 @@ public class OrganizationViewModel extends BaseViewModel {
                     }
                 })
         );
+    }
+
+    public void sortByNameAsc() {
+
+    }
+
+    public void sortByNameDesc() {
+
+    }
+
+    public void showUpToLimit() {
+
+    }
+
+    public void showUpToNoLimit() {
+
     }
 
     public void onItemClickListener(final int position) {

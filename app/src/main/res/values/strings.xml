@@ -13,6 +13,8 @@
     <string name="error_users_undefined">Cannot get members list for the organization</string>
     <string name="error_user_undefined">Cannot get user details</string>
 
+    <string name="navigation_back">back</string>
+
     <string name="search_hint">type organization login here…</string>
     <string name="search_icon">search icon</string>
     <string name="search_clear">clear search term</string>
@@ -21,6 +23,10 @@
     <string name="user_member_list_icon">member icon</string>
     <string name="user_member_list_open">open user details</string>
     <string name="user_member_list_incomplete">incomplete details</string>
+    <string name="user_member_list_sort_name_asc">sort by name asc</string>
+    <string name="user_member_list_sort_name_desc">sort by name desc</string>
+    <string name="user_member_list_up_to_limit">limit results to predefined</string>
+    <string name="user_member_list_up_to_no_limit">limit all possible results</string>
 
     <string name="retry">retry</string>
 </resources>
