@@ -108,6 +108,11 @@ class MainActivity : BaseActivity() {
                     listAdapter.setUser(it)
                 }
         )
+        subscription(viewModel.incomplete
+                .subscribeUiThread(this) {
+                    listAdapter.setIncomplete(it)
+                }
+        )
 
         search.textChangedListener {
             afterTextChanged {

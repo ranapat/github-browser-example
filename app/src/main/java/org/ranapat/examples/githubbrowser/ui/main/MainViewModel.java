@@ -23,7 +23,9 @@ import org.ranapat.instancefactory.Fi;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Maybe;
 import io.reactivex.MaybeSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -41,6 +43,7 @@ public class MainViewModel extends BaseViewModel {
     final public PublishSubject<Organization> organization;
     final public PublishSubject<List<User>> users;
     final public PublishSubject<User> user;
+    final public PublishSubject<User> incomplete;
 
     final private ConfigurationObservable configurationObservable;
     final private OrganizationObservable organizationObservable;
@@ -71,6 +74,7 @@ public class MainViewModel extends BaseViewModel {
         organization = PublishSubject.create();
         users = PublishSubject.create();
         user = PublishSubject.create();
+        incomplete = PublishSubject.create();
     }
 
     public MainViewModel() {
@@ -125,7 +129,14 @@ public class MainViewModel extends BaseViewModel {
                         users.onNext(_users);
                         state.onNext(READY);
 
-                        loadUserDetails();
+                        subscription(Maybe.just(true)
+                                .delay(250, TimeUnit.MILLISECONDS)
+                                .subscribe(new Consumer<Boolean>() {
+                                    @Override
+                                    public void accept(final Boolean aBoolean) {
+                                        loadUserDetails();
+                                    }
+                                }));
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -146,6 +157,7 @@ public class MainViewModel extends BaseViewModel {
 
     public void clearOrganization() {
         users.onNext(new ArrayList<User>());
+        clearDisposables();
     }
 
     public void onItemClickListener(final int position) {
@@ -158,19 +170,38 @@ public class MainViewModel extends BaseViewModel {
     }
 
     private void loadUserDetails() {
-        subscription(userObservable
-                .fetchDetails(usersList.get(0))
-                .subscribe(new Consumer<User>() {
-                    @Override
-                    public void accept(final User _user) {
-                        user.onNext(_user);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(final Throwable throwable) {
-                        messages.warning.onNext(new ParameterizedMessage(R.string.error_user_undefined));
-                    }
-                })
-        );
+        final List<Maybe<User>> disposables = new ArrayList<>();
+
+        for (final User _user : usersList) {
+            disposables.add(userObservable
+                    .fetchDetails(_user)
+                    .onErrorResumeNext(new Function<Throwable, MaybeSource<User>>() {
+                        @Override
+                        public MaybeSource<User> apply(final Throwable throwable) {
+                            incomplete.onNext(_user);
+
+                            return Maybe.just(_user);
+                        }
+                    })
+                    .doOnSuccess(new Consumer<User>() {
+                        @Override
+                        public void accept(final User __user) {
+                            user.onNext(__user);
+                        }
+                    })
+            );
+        }
+
+        subscription(Maybe.concat(disposables).toList().subscribe(new Consumer<List<User>>() {
+            @Override
+            public void accept(final List<User> users) {
+                //
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(final Throwable throwable) {
+                //
+            }
+        }));
     }
 }

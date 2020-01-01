@@ -22,13 +22,18 @@ class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val login: TextView = view.login
     private val date: TextView = view.date
     private val progressBar: ProgressBar = view.progressBar
+    private val incomplete: ImageView = view.incomplete
 
     fun bind(
             user: User,
-            position: Int
+            position: Int,
+            incomplete: Boolean
     ) {
         setUser(user)
         setPosition(position)
+        if (incomplete) {
+            setIncomplete()
+        }
     }
 
     fun setUser(user: User) {
@@ -40,14 +45,22 @@ class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         if (dateString.isNotEmpty()) {
             progressBar.isVisible = false
             date.isVisible = true
+            incomplete.isVisible = false
         } else {
             progressBar.isVisible = true
             date.isVisible = false
+            incomplete.isVisible = false
         }
         date.text = dateString
 
         setContentDescriptions(user)
         setAvatar(user)
+    }
+
+    fun setIncomplete() {
+        progressBar.isVisible = true
+        date.isVisible = false
+        incomplete.isVisible = true
     }
 
     private fun setContentDescriptions(user: User) {

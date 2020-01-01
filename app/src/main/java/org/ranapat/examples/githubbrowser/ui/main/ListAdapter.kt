@@ -11,21 +11,33 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
     var onItemClickListener: OnItemListener? = null
 
     private var users: ArrayList<User> = arrayListOf()
+    private var incomplete: ArrayList<User> = arrayListOf()
 
     fun setUsers(it: List<User>) {
         users = ArrayList(it)
+        incomplete.clear()
 
         notifyDataSetChanged()
     }
 
     fun setUser(it: User) {
-        val index = findIndexById(it)
+        val index = findIndexById(it, users)
         if (index == -1) {
             users.add(it)
         } else {
             users[index] = it
         }
         notifyItemChanged(users.indexOf(it), POPULATE_USER)
+    }
+
+    fun setIncomplete(it: User) {
+        val index = findIndexById(it, incomplete)
+        if (index == -1) {
+            incomplete.add(it)
+        } else {
+            incomplete[index] = it
+        }
+        notifyItemChanged(users.indexOf(it), POPULATE_INCOMPLETE)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder =
@@ -40,7 +52,8 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
 
         holder.bind(
                 user,
-                position
+                position,
+                findIndexById(user, incomplete) != -1
         )
     }
 
@@ -54,6 +67,7 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
 
                 when (payload) {
                     POPULATE_USER -> holder.setUser(user)
+                    POPULATE_INCOMPLETE -> holder.setIncomplete()
                 }
             }
         }
@@ -63,8 +77,8 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
         return users.size
     }
 
-    private fun findIndexById(user: User): Int {
-        for ((index, value) in users.withIndex()) {
+    private fun findIndexById(user: User, collection: ArrayList<User>): Int {
+        for ((index, value) in collection.withIndex()) {
             if (value.id == user.id) {
                 return index
             }
@@ -81,5 +95,6 @@ class ListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
 
     companion object {
         private const val POPULATE_USER = "populateUser"
+        private const val POPULATE_INCOMPLETE = "populateIncomplete"
     }
 }

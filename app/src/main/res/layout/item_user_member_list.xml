@@ -67,6 +67,7 @@
 
         <ProgressBar
             android:id="@+id/progressBar"
+            android:visibility="gone"
             android:layout_width="@dimen/list_wrapper_width"
             android:layout_height="@dimen/list_wrapper_height"
             android:layout_margin="@dimen/default_margin"
@@ -77,6 +78,22 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:progressDrawable="@drawable/circular_progress_bar"
             android:indeterminateDrawable="@drawable/circular_progress_bar" />
+
+        <ImageView
+            android:id="@+id/incomplete"
+            android:visibility="gone"
+            android:layout_width="@dimen/list_wrapper_width"
+            android:layout_height="@dimen/list_wrapper_height"
+            android:layout_margin="@dimen/default_margin"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/user_member_list_incomplete"
+            android:scaleType="fitCenter"
+            android:layout_marginStart="@dimen/outline_margin"
+            android:layout_marginEnd="@dimen/outline_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/open"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_generic_error" />
 
         <ImageButton
             android:id="@+id/open"
