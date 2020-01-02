@@ -28,4 +28,9 @@
         <item name="android:textSize">@dimen/smaller_font_size</item>
     </style>
 
+    <style name="MyToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark">
+        <item name="colorControlNormal">@color/primary_color</item>
+        <item name="titleTextColor">@color/primary_font_color</item>
+    </style>
+
 </resources>

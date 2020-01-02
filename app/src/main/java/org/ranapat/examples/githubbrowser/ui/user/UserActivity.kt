@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProviders
-import kotlinx.android.synthetic.main.activity_organization.*
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
+import kotlinx.android.synthetic.main.activity_user.*
 import kotlinx.android.synthetic.main.fragment_top_menu_generic.*
 import org.ranapat.examples.githubbrowser.R
 import org.ranapat.examples.githubbrowser.Settings
@@ -34,8 +36,18 @@ class UserActivity : BaseActivity() {
         viewModel.initialize(user)
     }
 
+    override fun initialize() {
+        super.initialize()
+
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.user_general_tab)))
+
+        pager.adapter = PagerAdapter(supportFragmentManager, tabLayout.tabCount)
+    }
+
     override fun initializeUi() {
-        //
+        setSupportActionBar(toolbar)
+
+        tabLayout.tabGravity = TabLayout.GRAVITY_FILL
     }
 
     override fun initializeListeners() {
@@ -72,6 +84,22 @@ class UserActivity : BaseActivity() {
         headerBack.setOnClickListener {
             onBackPressed()
         }
+
+        pager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                pager.currentItem = tab.position
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                //
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                //
+            }
+
+        })
     }
 
     private fun loading() {

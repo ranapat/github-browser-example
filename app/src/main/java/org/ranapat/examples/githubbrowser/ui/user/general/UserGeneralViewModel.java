@@ -1,23 +1,19 @@
-package org.ranapat.examples.githubbrowser.ui.user;
+package org.ranapat.examples.githubbrowser.ui.user.general;
 
 import android.content.Context;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import org.ranapat.examples.githubbrowser.R;
 import org.ranapat.examples.githubbrowser.data.entity.User;
 import org.ranapat.examples.githubbrowser.management.ApplicationContext;
 import org.ranapat.examples.githubbrowser.management.NetworkManager;
 import org.ranapat.examples.githubbrowser.management.TemporaryDataKeeperManager;
-import org.ranapat.examples.githubbrowser.observable.ExceptionChecker;
-import org.ranapat.examples.githubbrowser.observable.exceptions.UserUndefinedException;
 import org.ranapat.examples.githubbrowser.observable.user.UserObservable;
 import org.ranapat.examples.githubbrowser.ui.BaseViewModel;
-import org.ranapat.examples.githubbrowser.ui.publishable.ParameterizedMessage;
 import org.ranapat.instancefactory.Fi;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Maybe;
 import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
@@ -25,10 +21,8 @@ import static org.ranapat.examples.githubbrowser.ui.common.States.ERROR;
 import static org.ranapat.examples.githubbrowser.ui.common.States.LOADING;
 import static org.ranapat.examples.githubbrowser.ui.common.States.READY;
 
-public class UserViewModel extends BaseViewModel {
+public class UserGeneralViewModel extends BaseViewModel {
     final public PublishSubject<String> state;
-    final public PublishSubject<Class<? extends AppCompatActivity>> next;
-    final public PublishSubject<User> user;
 
     final private UserObservable userObservable;
     final private TemporaryDataKeeperManager temporaryDataKeeperManager;
@@ -37,7 +31,7 @@ public class UserViewModel extends BaseViewModel {
 
     private User currentUser;
 
-    public UserViewModel(
+    public UserGeneralViewModel(
             final NetworkManager networkManager,
             final UserObservable userObservable,
             final TemporaryDataKeeperManager temporaryDataKeeperManager,
@@ -51,11 +45,9 @@ public class UserViewModel extends BaseViewModel {
         this.context = new WeakReference<>(context);
 
         state = PublishSubject.create();
-        next = PublishSubject.create();
-        user = PublishSubject.create();
     }
 
-    public UserViewModel() {
+    public UserGeneralViewModel() {
         this(
                 Fi.get(NetworkManager.class),
                 Fi.get(UserObservable.class),
@@ -64,28 +56,21 @@ public class UserViewModel extends BaseViewModel {
         );
     }
 
-    public void initialize(final User currentUser) {
+    public void initialize() {
         state.onNext(LOADING);
 
-        this.currentUser = currentUser;
-        temporaryDataKeeperManager.user = currentUser;
-        user.onNext(currentUser);
+        currentUser = temporaryDataKeeperManager.user;
 
-        subscription(userObservable
-                .fetchDetails(currentUser)
-                .subscribe(new Consumer<User>() {
+        subscription(Maybe.just(true)
+                .delay(1, TimeUnit.SECONDS)
+                .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void accept(final User _user) {
+                    public void accept(final Boolean _aBoolean) {
                         state.onNext(READY);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(final Throwable throwable) {
-                        if (ExceptionChecker.isLast(throwable, UserUndefinedException.class)) {
-                            messages.error.onNext(new ParameterizedMessage(R.string.error_user_undefined));
-                        } else {
-                            messages.error.onNext(new ParameterizedMessage(R.string.unexpected_error));
-                        }
                         state.onNext(ERROR);
                     }
                 })
