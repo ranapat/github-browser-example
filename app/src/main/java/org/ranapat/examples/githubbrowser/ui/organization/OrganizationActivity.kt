@@ -111,6 +111,8 @@ class OrganizationActivity : BaseActivity() {
     }
 
     override fun initializeUi() {
+        loadingUserList.isVisible = true
+
         setSupportActionBar(toolbar)
 
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))

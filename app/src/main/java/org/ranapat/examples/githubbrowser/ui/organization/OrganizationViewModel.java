@@ -134,7 +134,7 @@ public class OrganizationViewModel extends BaseViewModel {
                     @Override
                     public void accept(final List<User> _users) {
                         usersList = _users;
-                        normalizeUsers();
+                        //normalizeUsers();
 
                         state.onNext(READY);
                     }
