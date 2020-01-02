@@ -59,4 +59,8 @@ public class ApplicationState implements DataEntity {
         sortDirection = null;
         limit = null;
     }
+
+    public boolean isSet() {
+        return currentOrganization != null && !currentOrganization.isEmpty();
+    }
 }

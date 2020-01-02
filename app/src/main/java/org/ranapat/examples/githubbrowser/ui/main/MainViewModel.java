@@ -5,12 +5,12 @@ import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.ranapat.examples.githubbrowser.R;
-import org.ranapat.examples.githubbrowser.data.entity.Configuration;
+import org.ranapat.examples.githubbrowser.data.entity.ApplicationState;
 import org.ranapat.examples.githubbrowser.data.entity.Organization;
 import org.ranapat.examples.githubbrowser.management.ApplicationContext;
 import org.ranapat.examples.githubbrowser.management.NetworkManager;
 import org.ranapat.examples.githubbrowser.observable.ExceptionChecker;
-import org.ranapat.examples.githubbrowser.observable.configuration.ConfigurationObservable;
+import org.ranapat.examples.githubbrowser.observable.applicationstate.ApplicationStateObservable;
 import org.ranapat.examples.githubbrowser.observable.exceptions.OrganizationUndefinedException;
 import org.ranapat.examples.githubbrowser.observable.organization.OrganizationObservable;
 import org.ranapat.examples.githubbrowser.ui.BaseViewModel;
@@ -34,20 +34,22 @@ public class MainViewModel extends BaseViewModel {
     final public PublishSubject<Organization> organization;
     final public PublishSubject<Boolean> undefinedOrganization;
 
-    final private ConfigurationObservable configurationObservable;
+    final private ApplicationStateObservable applicationStateObservable;
     final private OrganizationObservable organizationObservable;
 
     final private WeakReference<Context> context;
 
+    private ApplicationState currentApplicationState;
+
     public MainViewModel(
             final NetworkManager networkManager,
-            final ConfigurationObservable configurationObservable,
+            final ApplicationStateObservable applicationStateObservable,
             final OrganizationObservable organizationObservable,
             final Context context
     ) {
         super(networkManager);
 
-        this.configurationObservable = configurationObservable;
+        this.applicationStateObservable = applicationStateObservable;
         this.organizationObservable = organizationObservable;
 
         this.context = new WeakReference<>(context);
@@ -61,7 +63,7 @@ public class MainViewModel extends BaseViewModel {
     public MainViewModel() {
         this(
                 Fi.get(NetworkManager.class),
-                Fi.get(ConfigurationObservable.class),
+                Fi.get(ApplicationStateObservable.class),
                 Fi.get(OrganizationObservable.class),
                 Fi.get(ApplicationContext.class)
         );
@@ -70,17 +72,23 @@ public class MainViewModel extends BaseViewModel {
     public void initialize() {
         state.onNext(LOADING);
 
-        subscription(configurationObservable
+        subscription(applicationStateObservable
                 .fetch()
-                .subscribe(new Consumer<Configuration>() {
+                .subscribe(new Consumer<ApplicationState>() {
                     @Override
-                    public void accept(final Configuration _configuration) {
+                    public void accept(final ApplicationState applicationState) {
+                        currentApplicationState = applicationState;
+
                         state.onNext(READY);
+
+                        if (applicationState.isSet()) {
+                            searchForOrganization(applicationState.currentOrganization);
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(final Throwable throwable) {
-                        messages.success.onNext(new ParameterizedMessage(R.string.error_configuration_undefined));
+                        messages.error.onNext(new ParameterizedMessage(R.string.unexpected_error));
                         state.onNext(ERROR);
                     }
                 })
@@ -96,9 +104,25 @@ public class MainViewModel extends BaseViewModel {
                 .subscribe(new Consumer<Organization>() {
                     @Override
                     public void accept(final Organization _organization) {
-                        organization.onNext(_organization);
-                        next.onNext(OrganizationActivity.class);
-                        state.onNext(NAVIGATE);
+                        currentApplicationState.currentOrganization = login;
+                        subscription(applicationStateObservable
+                                .store(currentApplicationState)
+                                .subscribe(new Consumer<ApplicationState>() {
+                                    @Override
+                                    public void accept(final ApplicationState applicationState) {
+                                        organization.onNext(_organization);
+                                        next.onNext(OrganizationActivity.class);
+                                        state.onNext(NAVIGATE);
+                                    }
+                                }, new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(final Throwable throwable) {
+                                        organization.onNext(_organization);
+                                        next.onNext(OrganizationActivity.class);
+                                        state.onNext(NAVIGATE);
+                                    }
+                                })
+                        );
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -118,4 +142,5 @@ public class MainViewModel extends BaseViewModel {
     protected void triggerNetworkStatus(final Boolean isOnline) {
         //
     }
+
 }

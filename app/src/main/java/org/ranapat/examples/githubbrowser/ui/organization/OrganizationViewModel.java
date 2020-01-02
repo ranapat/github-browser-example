@@ -5,12 +5,14 @@ import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.ranapat.examples.githubbrowser.R;
+import org.ranapat.examples.githubbrowser.data.entity.ApplicationState;
 import org.ranapat.examples.githubbrowser.data.entity.Configuration;
 import org.ranapat.examples.githubbrowser.data.entity.Organization;
 import org.ranapat.examples.githubbrowser.data.entity.User;
 import org.ranapat.examples.githubbrowser.management.ApplicationContext;
 import org.ranapat.examples.githubbrowser.management.NetworkManager;
 import org.ranapat.examples.githubbrowser.observable.ExceptionChecker;
+import org.ranapat.examples.githubbrowser.observable.applicationstate.ApplicationStateObservable;
 import org.ranapat.examples.githubbrowser.observable.configuration.ConfigurationObservable;
 import org.ranapat.examples.githubbrowser.observable.exceptions.ConfigurationUndefinedException;
 import org.ranapat.examples.githubbrowser.observable.exceptions.UsersUndefinedException;
@@ -60,6 +62,7 @@ public class OrganizationViewModel extends BaseViewModel {
     final public PublishSubject<String> limit;
     final public PublishSubject<LoadingProgress> loading;
 
+    final private ApplicationStateObservable applicationStateObservable;
     final private ConfigurationObservable configurationObservable;
     final private UserObservable userObservable;
 
@@ -67,6 +70,7 @@ public class OrganizationViewModel extends BaseViewModel {
 
     final private WeakReference<Context> context;
 
+    private ApplicationState currentApplicationState;
     private Configuration currentConfiguration;
     private Organization currentOrganization;
     private String currentSortBy;
@@ -78,6 +82,7 @@ public class OrganizationViewModel extends BaseViewModel {
 
     public OrganizationViewModel(
             final NetworkManager networkManager,
+            final ApplicationStateObservable applicationStateObservable,
             final ConfigurationObservable configurationObservable,
             final UserObservable userObservable,
             final ComparatorFactory comparatorFactory,
@@ -85,6 +90,7 @@ public class OrganizationViewModel extends BaseViewModel {
     ) {
         super(networkManager);
 
+        this.applicationStateObservable = applicationStateObservable;
         this.configurationObservable = configurationObservable;
         this.userObservable = userObservable;
 
@@ -107,6 +113,7 @@ public class OrganizationViewModel extends BaseViewModel {
     public OrganizationViewModel() {
         this(
                 Fi.get(NetworkManager.class),
+                Fi.get(ApplicationStateObservable.class),
                 Fi.get(ConfigurationObservable.class),
                 Fi.get(UserObservable.class),
                 Fi.get(ComparatorFactory.class),
@@ -120,10 +127,19 @@ public class OrganizationViewModel extends BaseViewModel {
         this.currentOrganization = currentOrganization;
         organization.onNext(currentOrganization);
 
-        resetSortAndLimit();
-
-        subscription(configurationObservable
+        subscription(applicationStateObservable
                 .fetch()
+                .flatMap(new Function<ApplicationState, MaybeSource<Configuration>>() {
+                    @Override
+                    public MaybeSource<Configuration> apply(final ApplicationState _applicationState) {
+                        currentApplicationState = _applicationState;
+
+                        resetSortAndLimit();
+
+                        return configurationObservable
+                                .fetch();
+                    }
+                })
                 .flatMap(new Function<Configuration, MaybeSource<List<User>>>() {
                     @Override
                     public MaybeSource<List<User>> apply(final Configuration _configuration) {
@@ -160,12 +176,22 @@ public class OrganizationViewModel extends BaseViewModel {
         this.currentSortBy = currentSortBy;
         sortBy.onNext(currentSortBy);
 
+        currentApplicationState.sortBy = currentSortBy;
+        subscription(applicationStateObservable
+                .store(currentApplicationState)
+                .subscribe());
+
         normalizeUsers();
     }
 
     public void sortDirection(final String currentSortDirection) {
         this.currentSortDirection = currentSortDirection;
         sortDirection.onNext(currentSortDirection);
+
+        currentApplicationState.sortDirection = currentSortDirection;
+        subscription(applicationStateObservable
+                .store(currentApplicationState)
+                .subscribe());
 
         normalizeUsers();
     }
@@ -174,12 +200,22 @@ public class OrganizationViewModel extends BaseViewModel {
         currentLimit = UP_TO_LIMIT;
         limit.onNext(currentLimit);
 
+        currentApplicationState.limit = currentLimit;
+        subscription(applicationStateObservable
+                .store(currentApplicationState)
+                .subscribe());
+
         normalizeUsers();
     }
 
     public void showNoLimit() {
         currentLimit = NO_LIMIT;
         limit.onNext(currentLimit);
+
+        currentApplicationState.limit = currentLimit;
+        subscription(applicationStateObservable
+                .store(currentApplicationState)
+                .subscribe());
 
         normalizeUsers();
     }
@@ -188,15 +224,22 @@ public class OrganizationViewModel extends BaseViewModel {
         Timber.e("### click on " + position);
     }
 
+    public void viewDestroyed() {
+        currentApplicationState.reset();
+        subscription(applicationStateObservable
+                .store(currentApplicationState)
+                .subscribe());
+    }
+
     @Override
     protected void triggerNetworkStatus(final Boolean isOnline) {
         //
     }
 
     private void resetSortAndLimit() {
-        currentSortBy = SORT_BY_NAME;
-        currentSortDirection = SORT_DIRECTION_ASC;
-        currentLimit = UP_TO_LIMIT;
+        currentSortBy = currentApplicationState.sortBy == null ? SORT_BY_NAME : currentApplicationState.sortBy;
+        currentSortDirection = currentApplicationState.sortDirection == null ? SORT_DIRECTION_ASC : currentApplicationState.sortDirection;
+        currentLimit = currentApplicationState.limit == null ? UP_TO_LIMIT : currentApplicationState.limit;
 
         sortBy.onNext(currentSortBy);
         sortDirection.onNext(currentSortDirection);

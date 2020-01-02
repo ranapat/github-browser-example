@@ -22,7 +22,8 @@ public class ApplicationStateObservable {
 
     public Maybe<ApplicationState> fetch() {
         return dataObservable
-                .fetch();
+                .fetch()
+                .defaultIfEmpty(new ApplicationState(null, null, null, null));
     }
 
     public Maybe<ApplicationState> store(final ApplicationState applicationState) {

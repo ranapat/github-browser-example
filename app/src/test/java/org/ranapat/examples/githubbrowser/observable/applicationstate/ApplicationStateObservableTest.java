@@ -7,6 +7,9 @@ import org.ranapat.instancefactory.InstanceFactory;
 import io.reactivex.Maybe;
 import io.reactivex.observers.TestObserver;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +50,22 @@ public class ApplicationStateObservableTest {
 
         testObserver.awaitTerminalEvent();
         testObserver.assertValue(applicationState);
+    }
+
+    @Test
+    public void shouldEmitOnEmpty() {
+        final DataObservable dataObservable = mock(DataObservable.class);
+
+        when(dataObservable.fetch()).thenReturn(Maybe.<ApplicationState>empty());
+
+        final ApplicationStateObservable applicationStateObservable = new ApplicationStateObservable(
+                dataObservable
+        );
+
+        final TestObserver<ApplicationState> testObserver = applicationStateObservable.fetch().test();
+
+        testObserver.awaitTerminalEvent();
+        assertThat(testObserver.valueCount(), is(equalTo(1)));
     }
 
     @Test

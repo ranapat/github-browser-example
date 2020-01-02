@@ -54,6 +54,12 @@ class OrganizationActivity : BaseActivity() {
         viewModel.initialize(organization)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        viewModel.viewDestroyed()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.organization, menu)
 

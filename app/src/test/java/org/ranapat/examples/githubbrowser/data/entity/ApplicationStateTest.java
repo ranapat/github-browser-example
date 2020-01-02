@@ -62,4 +62,24 @@ public class ApplicationStateTest {
         assertThat(applicationState.limit, is(equalTo(null)));
     }
 
+    @Test
+    public void shouldCheckIfSet() {
+        final ApplicationState applicationState = new ApplicationState(
+                "currentOrganization",
+                "sortBy",
+                "sortDirection",
+                "limit"
+        );
+        assertThat(applicationState.isSet(), is(equalTo(true)));
+
+        applicationState.currentOrganization = null;
+        assertThat(applicationState.isSet(), is(equalTo(false)));
+
+        applicationState.currentOrganization = "";
+        assertThat(applicationState.isSet(), is(equalTo(false)));
+
+        applicationState.currentOrganization = ".";
+        assertThat(applicationState.isSet(), is(equalTo(true)));
+    }
+
 }
