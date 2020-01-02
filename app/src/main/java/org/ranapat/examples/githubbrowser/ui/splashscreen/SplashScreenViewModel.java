@@ -70,7 +70,7 @@ public class SplashScreenViewModel extends BaseViewModel {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(final Throwable throwable) {
-                        message.onNext(new ParameterizedMessage(R.string.unexpected_error));
+                        message.onNext(new ParameterizedMessage(R.string.error_configuration_undefined));
                         state.onNext(ERROR);
                     }
                 }));
