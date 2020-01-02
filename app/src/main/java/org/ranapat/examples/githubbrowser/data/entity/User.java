@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey;
 import org.jetbrains.annotations.NotNull;
 import org.ranapat.examples.githubbrowser.data.tools.UpToDateChecker;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import static androidx.room.ForeignKey.CASCADE;
@@ -22,7 +23,7 @@ import static androidx.room.ForeignKey.CASCADE;
                 childColumns = "organization_id",
                 onDelete = CASCADE
         ))
-public class User implements ExpirableEntity {
+public class User implements ExpirableEntity, Serializable {
     @PrimaryKey
     public final long id;
 

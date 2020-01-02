@@ -8,6 +8,7 @@ import androidx.room.Index;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import static androidx.room.ForeignKey.CASCADE;
@@ -21,7 +22,7 @@ import static androidx.room.ForeignKey.CASCADE;
                 childColumns = "user_id",
                 onDelete = CASCADE
         ))
-public class UserDetails implements DataEntity {
+public class UserDetails implements DataEntity, Serializable {
     @NotNull
     @ColumnInfo(name = "user_id")
     public final long userId;
