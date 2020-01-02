@@ -6,6 +6,7 @@
     <dimen name="half_margin">4dp</dimen>
 
     <dimen name="double_margin">15dp</dimen>
+    <dimen name="double_padding">15dp</dimen>
 
     <dimen name="outline_half_padding">10dp</dimen>
     <dimen name="outline_half_margin">10dp</dimen>
@@ -44,5 +45,8 @@
     <dimen name="list_button_height">24dp</dimen>
     <dimen name="list_wrapper_width">34dp</dimen>
     <dimen name="list_wrapper_height">34dp</dimen>
+
+    <dimen name="details_image_width">120dp</dimen>
+    <dimen name="details_image_height">120dp</dimen>
 
 </resources>

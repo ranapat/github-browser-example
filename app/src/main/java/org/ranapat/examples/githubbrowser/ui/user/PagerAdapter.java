@@ -19,6 +19,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(final int position) {
         switch (position) {
             case 0: return new UserGeneralFragment();
+            case 1: return new UserGeneralFragment();
             default: return null;
         }
     }

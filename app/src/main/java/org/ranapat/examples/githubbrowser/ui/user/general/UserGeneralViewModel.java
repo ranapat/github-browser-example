@@ -23,6 +23,7 @@ import static org.ranapat.examples.githubbrowser.ui.common.States.READY;
 
 public class UserGeneralViewModel extends BaseViewModel {
     final public PublishSubject<String> state;
+    final public PublishSubject<User> user;
 
     final private UserObservable userObservable;
     final private TemporaryDataKeeperManager temporaryDataKeeperManager;
@@ -45,6 +46,7 @@ public class UserGeneralViewModel extends BaseViewModel {
         this.context = new WeakReference<>(context);
 
         state = PublishSubject.create();
+        user = PublishSubject.create();
     }
 
     public UserGeneralViewModel() {
@@ -60,6 +62,7 @@ public class UserGeneralViewModel extends BaseViewModel {
         state.onNext(LOADING);
 
         currentUser = temporaryDataKeeperManager.user;
+        user.onNext(currentUser);
 
         subscription(Maybe.just(true)
                 .delay(1, TimeUnit.SECONDS)

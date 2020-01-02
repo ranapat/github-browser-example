@@ -40,6 +40,7 @@ class UserActivity : BaseActivity() {
         super.initialize()
 
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.user_general_tab)))
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.user_general_repos)))
 
         pager.adapter = PagerAdapter(supportFragmentManager, tabLayout.tabCount)
     }
