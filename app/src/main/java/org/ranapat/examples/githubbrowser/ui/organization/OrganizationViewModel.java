@@ -19,6 +19,7 @@ import org.ranapat.examples.githubbrowser.observable.exceptions.UsersUndefinedEx
 import org.ranapat.examples.githubbrowser.observable.user.UserObservable;
 import org.ranapat.examples.githubbrowser.ui.BaseViewModel;
 import org.ranapat.examples.githubbrowser.ui.publishable.ParameterizedMessage;
+import org.ranapat.examples.githubbrowser.ui.user.UserActivity;
 import org.ranapat.instancefactory.Fi;
 
 import java.lang.ref.WeakReference;
@@ -33,10 +34,10 @@ import io.reactivex.MaybeSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
-import timber.log.Timber;
 
 import static org.ranapat.examples.githubbrowser.ui.common.States.ERROR;
 import static org.ranapat.examples.githubbrowser.ui.common.States.LOADING;
+import static org.ranapat.examples.githubbrowser.ui.common.States.NAVIGATE;
 import static org.ranapat.examples.githubbrowser.ui.common.States.READY;
 
 public class OrganizationViewModel extends BaseViewModel {
@@ -53,6 +54,7 @@ public class OrganizationViewModel extends BaseViewModel {
 
     final public PublishSubject<String> state;
     final public PublishSubject<Class<? extends AppCompatActivity>> next;
+    final public PublishSubject<User> nextUser;
     final public PublishSubject<Configuration> configuration;
     final public PublishSubject<Organization> organization;
     final public PublishSubject<List<ListUser>> users;
@@ -100,6 +102,7 @@ public class OrganizationViewModel extends BaseViewModel {
 
         state = PublishSubject.create();
         next = PublishSubject.create();
+        nextUser = PublishSubject.create();
         configuration = PublishSubject.create();
         organization = PublishSubject.create();
         users = PublishSubject.create();
@@ -221,7 +224,11 @@ public class OrganizationViewModel extends BaseViewModel {
     }
 
     public void onItemClickListener(final int position) {
-        Timber.e("### click on " + position);
+        if (sortedUsers.size() > position) {
+            nextUser.onNext(sortedUsers.get(position).user);
+            next.onNext(UserActivity.class);
+            state.onNext(NAVIGATE);
+        }
     }
 
     public void viewDestroyed() {

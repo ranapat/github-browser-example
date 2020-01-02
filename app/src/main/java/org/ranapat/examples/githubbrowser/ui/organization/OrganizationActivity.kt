@@ -1,5 +1,6 @@
 package org.ranapat.examples.githubbrowser.ui.organization
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,20 +17,20 @@ import org.ranapat.examples.githubbrowser.R
 import org.ranapat.examples.githubbrowser.Settings
 import org.ranapat.examples.githubbrowser.data.entity.Configuration
 import org.ranapat.examples.githubbrowser.data.entity.Organization
+import org.ranapat.examples.githubbrowser.data.entity.User
 import org.ranapat.examples.githubbrowser.ui.BaseActivity
 import org.ranapat.examples.githubbrowser.ui.common.IntentParameters
 import org.ranapat.examples.githubbrowser.ui.common.OnItemListener
 import org.ranapat.examples.githubbrowser.ui.common.States.*
 import org.ranapat.examples.githubbrowser.ui.organization.OrganizationViewModel.*
 import org.ranapat.examples.githubbrowser.ui.util.hideSoftKeyboard
-import org.ranapat.examples.githubbrowser.ui.util.startCleanRedirect
-import org.ranapat.examples.githubbrowser.ui.util.startRedirect
 import org.ranapat.examples.githubbrowser.ui.util.subscribeUiThread
 import java.util.concurrent.TimeUnit
 
 class OrganizationActivity : BaseActivity() {
     private lateinit var viewModel: OrganizationViewModel
     private lateinit var nextActivity: Class<out AppCompatActivity>
+    private lateinit var nextUser: User
 
     override val layoutResource: Int = R.layout.activity_organization
     override fun baseViewModel() = viewModel
@@ -137,8 +138,7 @@ class OrganizationActivity : BaseActivity() {
                 .throttleFirst(Settings.debounceNavigationInMilliseconds, TimeUnit.MILLISECONDS)
                 .subscribeUiThread(this) {
                     when (it) {
-                        REDIRECT -> startRedirect(nextActivity)
-                        CLEAN_REDIRECT -> startCleanRedirect(nextActivity)
+                        NAVIGATE -> navigate()
                     }
                 }
         )
@@ -155,6 +155,11 @@ class OrganizationActivity : BaseActivity() {
         subscription(viewModel.next
                 .subscribe {
                     nextActivity = it
+                }
+        )
+        subscription(viewModel.nextUser
+                .subscribe {
+                    nextUser = it
                 }
         )
         subscription(viewModel.configuration
@@ -235,5 +240,14 @@ class OrganizationActivity : BaseActivity() {
 
     private fun error() {
         loading.isVisible = false
+    }
+
+    private fun navigate() {
+        val launchIntent = Intent()
+        launchIntent.setClass(applicationContext, nextActivity)
+        launchIntent.putExtra(IntentParameters.USER, nextUser as User)
+        startActivity(launchIntent)
+
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 }

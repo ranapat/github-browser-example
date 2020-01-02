@@ -4,4 +4,5 @@ public class IntentParameters {
     public static final String ACTIVITY_BUNDLE = "activityBundle";
 
     public static final String ORGANIZATION = "organization";
+    public static final String USER = "user";
 }
