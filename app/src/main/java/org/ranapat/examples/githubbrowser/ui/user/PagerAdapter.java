@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import org.ranapat.examples.githubbrowser.ui.user.general.UserGeneralFragment;
+import org.ranapat.examples.githubbrowser.ui.user.organizations.UserOrganizationsFragment;
 import org.ranapat.examples.githubbrowser.ui.user.repos.UserReposFragment;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
@@ -21,6 +22,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0: return new UserGeneralFragment();
             case 1: return new UserReposFragment();
+            case 2: return new UserOrganizationsFragment();
             default: return null;
         }
     }

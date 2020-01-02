@@ -51,7 +51,7 @@
     <string name="user_general_tab_public_gitsts">public gists: %d</string>
 
     <string name="user_general_repos">Repos</string>
-
+    <string name="user_general_organizations">Organizations</string>
 
     <string name="retry">retry</string>
 </resources>

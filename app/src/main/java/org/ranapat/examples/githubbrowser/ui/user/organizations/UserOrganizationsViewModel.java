@@ -1,4 +1,4 @@
-package org.ranapat.examples.githubbrowser.ui.user.repos;
+package org.ranapat.examples.githubbrowser.ui.user.organizations;
 
 import android.content.Context;
 
@@ -21,7 +21,7 @@ import static org.ranapat.examples.githubbrowser.ui.common.States.ERROR;
 import static org.ranapat.examples.githubbrowser.ui.common.States.LOADING;
 import static org.ranapat.examples.githubbrowser.ui.common.States.READY;
 
-public class UserReposViewModel extends BaseViewModel {
+public class UserOrganizationsViewModel extends BaseViewModel {
     final public PublishSubject<String> state;
     final public PublishSubject<String> url;
 
@@ -32,7 +32,7 @@ public class UserReposViewModel extends BaseViewModel {
 
     private User currentUser;
 
-    public UserReposViewModel(
+    public UserOrganizationsViewModel(
             final NetworkManager networkManager,
             final UserObservable userObservable,
             final TemporaryDataKeeperManager temporaryDataKeeperManager,
@@ -49,7 +49,7 @@ public class UserReposViewModel extends BaseViewModel {
         url = PublishSubject.create();
     }
 
-    public UserReposViewModel() {
+    public UserOrganizationsViewModel() {
         this(
                 Fi.get(NetworkManager.class),
                 Fi.get(UserObservable.class),
@@ -68,7 +68,7 @@ public class UserReposViewModel extends BaseViewModel {
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(final Boolean _aBoolean) {
-                        url.onNext(currentUser.urls.reposUrl);
+                        url.onNext(currentUser.urls.organizationsUrl);
                         state.onNext(READY);
                     }
                 }, new Consumer<Throwable>() {
