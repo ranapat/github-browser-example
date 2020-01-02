@@ -10,11 +10,13 @@ import androidx.room.TypeConverters;
 
 import org.ranapat.examples.githubbrowser.GithubBrowserApplication;
 import org.ranapat.examples.githubbrowser.Settings;
+import org.ranapat.examples.githubbrowser.data.dao.ApplicationStateDao;
 import org.ranapat.examples.githubbrowser.data.dao.ConfigurationDao;
 import org.ranapat.examples.githubbrowser.data.dao.OrganizationDao;
 import org.ranapat.examples.githubbrowser.data.dao.UserDao;
 import org.ranapat.examples.githubbrowser.data.dao.UserDetailsDao;
 import org.ranapat.examples.githubbrowser.data.dao.UserUrlsDao;
+import org.ranapat.examples.githubbrowser.data.entity.ApplicationState;
 import org.ranapat.examples.githubbrowser.data.entity.Configuration;
 import org.ranapat.examples.githubbrowser.data.entity.Organization;
 import org.ranapat.examples.githubbrowser.data.entity.User;
@@ -26,6 +28,8 @@ import org.ranapat.instancefactory.StaticallyInstantiable;
 
 @Database(
         entities = {
+                ApplicationState.class,
+
                 Configuration.class,
 
                 Organization.class,
@@ -67,6 +71,8 @@ public abstract class ApplicationDatabase extends RoomDatabase {
                 .fallbackToDestructiveMigration()
                 .build();
     }
+
+    public abstract ApplicationStateDao applicationStateDao();
 
     public abstract ConfigurationDao configurationDao();
 

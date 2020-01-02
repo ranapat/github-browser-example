@@ -2,8 +2,52 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "7997e4603b8501b9eeb0ff218e513741",
+    "identityHash": "a185282f431d3b34a2d63d10b7da2040",
     "entities": [
+      {
+        "tableName": "application_state",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `current_organization` TEXT, `sort_by` TEXT, `sort_direction` TEXT, `limit` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentOrganization",
+            "columnName": "current_organization",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sortBy",
+            "columnName": "sort_by",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sortDirection",
+            "columnName": "sort_direction",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "limit",
+            "columnName": "limit",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
       {
         "tableName": "configuration",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `default_members_in_organization_per_page` INTEGER NOT NULL, `organization` TEXT, `organization_members` TEXT, `user_info` TEXT, `updated_at` INTEGER, PRIMARY KEY(`id`))",
@@ -375,7 +419,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7997e4603b8501b9eeb0ff218e513741')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a185282f431d3b34a2d63d10b7da2040')"
     ]
   }
 }
