@@ -14,7 +14,6 @@ import org.ranapat.examples.githubbrowser.observable.ExceptionChecker;
 import org.ranapat.examples.githubbrowser.observable.configuration.ConfigurationObservable;
 import org.ranapat.examples.githubbrowser.observable.exceptions.ConfigurationUndefinedException;
 import org.ranapat.examples.githubbrowser.observable.exceptions.UsersUndefinedException;
-import org.ranapat.examples.githubbrowser.observable.organization.OrganizationObservable;
 import org.ranapat.examples.githubbrowser.observable.user.UserObservable;
 import org.ranapat.examples.githubbrowser.ui.BaseViewModel;
 import org.ranapat.examples.githubbrowser.ui.publishable.ParameterizedMessage;
@@ -23,9 +22,9 @@ import org.ranapat.instancefactory.Fi;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.Maybe;
 import io.reactivex.MaybeSource;
@@ -59,10 +58,12 @@ public class OrganizationViewModel extends BaseViewModel {
     final public PublishSubject<String> sortBy;
     final public PublishSubject<String> sortDirection;
     final public PublishSubject<String> limit;
+    final public PublishSubject<LoadingProgress> loading;
 
     final private ConfigurationObservable configurationObservable;
-    final private OrganizationObservable organizationObservable;
     final private UserObservable userObservable;
+
+    final private ComparatorFactory comparatorFactory;
 
     final private WeakReference<Context> context;
 
@@ -73,19 +74,21 @@ public class OrganizationViewModel extends BaseViewModel {
     private String currentLimit;
     private List<User> usersList;
     private List<ListUser> normalizedUsers;
+    private List<ListUser> sorteddUsers;
 
     public OrganizationViewModel(
             final NetworkManager networkManager,
             final ConfigurationObservable configurationObservable,
-            final OrganizationObservable organizationObservable,
             final UserObservable userObservable,
+            final ComparatorFactory comparatorFactory,
             final Context context
     ) {
         super(networkManager);
 
         this.configurationObservable = configurationObservable;
-        this.organizationObservable = organizationObservable;
         this.userObservable = userObservable;
+
+        this.comparatorFactory = comparatorFactory;
 
         this.context = new WeakReference<>(context);
 
@@ -98,14 +101,15 @@ public class OrganizationViewModel extends BaseViewModel {
         sortBy = PublishSubject.create();
         sortDirection = PublishSubject.create();
         limit = PublishSubject.create();
+        loading = PublishSubject.create();
     }
 
     public OrganizationViewModel() {
         this(
                 Fi.get(NetworkManager.class),
                 Fi.get(ConfigurationObservable.class),
-                Fi.get(OrganizationObservable.class),
                 Fi.get(UserObservable.class),
+                Fi.get(ComparatorFactory.class),
                 Fi.get(ApplicationContext.class)
         );
     }
@@ -134,9 +138,7 @@ public class OrganizationViewModel extends BaseViewModel {
                     @Override
                     public void accept(final List<User> _users) {
                         usersList = _users;
-                        //normalizeUsers();
-
-                        state.onNext(READY);
+                        loadUsers();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -202,52 +204,53 @@ public class OrganizationViewModel extends BaseViewModel {
     }
 
     private void normalizeUsers() {
-        normalizedUsers = new ArrayList<>();
-        for (final User user : usersList) {
-            normalizedUsers.add(new ListUser(user));
+        sorteddUsers = new ArrayList<>();
+        for (final ListUser _user : normalizedUsers) {
+            if (!_user.incomplete) {
+                sorteddUsers.add(_user);
+            }
         }
 
-        final int positive = currentSortDirection.equals(SORT_DIRECTION_ASC) ? 1 : -1;
-        final int negative = -1 * positive;
-        final Comparator<ListUser> comparator = new Comparator<ListUser>() {
-            @Override
-            public int compare(final ListUser o1, final ListUser o2) {
-                final int index = o1.user.login.compareToIgnoreCase(o2.user.login);
-
-                if (index > 0) {
-                    return positive;
-                } else if (index < 0) {
-                    return negative;
-                } else {
-                    return 0;
-                }
-            }
-        };
-
-        Collections.sort(normalizedUsers, comparator);
+        Collections.sort(sorteddUsers, comparatorFactory.get(currentSortBy, currentSortDirection));
 
         if (currentLimit.equals(UP_TO_LIMIT)) {
-            normalizedUsers = normalizedUsers.subList(
+            sorteddUsers = sorteddUsers.subList(
                     0,
-                    Math.min(normalizedUsers.size(), currentConfiguration.defaultMembersInOrganizationPerPage)
+                    Math.min(sorteddUsers.size(), currentConfiguration.defaultMembersInOrganizationPerPage)
             );
         }
 
-        users.onNext(normalizedUsers);
+        users.onNext(sorteddUsers);
+    }
 
+    private void loadUsers() {
         clearDisposables();
+
         subscription(Maybe.just(true)
                 .delay(250, TimeUnit.MILLISECONDS)
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(final Boolean aBoolean) {
+                        initializeNormalizedUsers();
+
                         loadUserDetails();
                     }
                 }));
     }
 
+    private void initializeNormalizedUsers() {
+        normalizedUsers = new ArrayList<>();
+        for (final User user : usersList) {
+            normalizedUsers.add(new ListUser(user));
+        }
+    }
+
     private void loadUserDetails() {
+        final AtomicReference<LoadingProgress> loadingProgressAtomicReference = new AtomicReference<>();
         final List<Maybe<User>> disposables = new ArrayList<>();
+
+        loadingProgressAtomicReference.set(new LoadingProgress());
+        loadingProgressAtomicReference.get().total = normalizedUsers.size();
 
         for (final ListUser _user : normalizedUsers) {
             disposables.add(userObservable
@@ -255,9 +258,10 @@ public class OrganizationViewModel extends BaseViewModel {
                     .onErrorResumeNext(new Function<Throwable, MaybeSource<User>>() {
                         @Override
                         public MaybeSource<User> apply(final Throwable throwable) {
-                            _user.incomplete = true;
+                            loadingProgressAtomicReference.get().failed++;
+                            loading.onNext(loadingProgressAtomicReference.get());
 
-                            user.onNext(_user);
+                            _user.incomplete = true;
 
                             return Maybe.just(_user.user);
                         }
@@ -265,7 +269,8 @@ public class OrganizationViewModel extends BaseViewModel {
                     .doOnSuccess(new Consumer<User>() {
                         @Override
                         public void accept(final User __user) {
-                            user.onNext(_user);
+                            loadingProgressAtomicReference.get().loaded++;
+                            loading.onNext(loadingProgressAtomicReference.get());
                         }
                     })
             );
@@ -274,12 +279,20 @@ public class OrganizationViewModel extends BaseViewModel {
         subscription(Maybe.concat(disposables).toList().subscribe(new Consumer<List<User>>() {
             @Override
             public void accept(final List<User> users) {
-                //
+                loadingProgressAtomicReference.get().complete = true;
+                loading.onNext(loadingProgressAtomicReference.get());
+
+                normalizeUsers();
+                state.onNext(READY);
             }
         }, new Consumer<Throwable>() {
             @Override
             public void accept(final Throwable throwable) {
-                //
+                loadingProgressAtomicReference.get().complete = true;
+                loading.onNext(loadingProgressAtomicReference.get());
+
+                normalizeUsers();
+                state.onNext(READY);
             }
         }));
     }

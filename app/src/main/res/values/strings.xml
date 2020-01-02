@@ -28,7 +28,7 @@
     <string name="user_member_list_followers">%s / followers: %s</string>
     <string name="user_member_list_public_gists">%s / public gists: %s</string>
     <string name="user_member_list_loading_in_progress_list">fetching users in the organization…</string>
-    <string name="user_member_list_loading_in_progress_details">fetching user details %d from %d</string>
+    <string name="user_member_list_loading_in_progress_details">fetching user details %d from %d, %d failed</string>
     <string name="user_member_list_incomplete">incomplete details</string>
     <string name="user_member_list_sort_name">sort by name</string>
     <string name="user_member_list_sort_public_repos">sort by public repos</string>

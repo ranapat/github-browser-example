@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_organization.*
 import kotlinx.android.synthetic.main.fragment_top_menu_generic.*
+import kotlinx.android.synthetic.main.layout_loading_users_list.*
 import org.ranapat.examples.githubbrowser.R
 import org.ranapat.examples.githubbrowser.Settings
 import org.ranapat.examples.githubbrowser.data.entity.Configuration
@@ -193,6 +194,17 @@ class OrganizationActivity : BaseActivity() {
                     limit = it
 
                     invalidateOptionsMenu()
+                }
+        )
+        subscription(viewModel.loading
+                .subscribeUiThread(this) {
+                    if (it.complete) {
+                        loadingUserListContainer.isVisible = false
+                    } else {
+                        textView.text = getString(R.string.user_member_list_loading_in_progress_details).format(
+                                it.loaded, it.total, it.failed
+                        )
+                    }
                 }
         )
 
