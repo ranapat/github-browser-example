@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import org.ranapat.examples.githubbrowser.ui.user.general.UserGeneralFragment;
+import org.ranapat.examples.githubbrowser.ui.user.repos.UserReposFragment;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     private int numberOfTabs;
@@ -19,7 +20,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(final int position) {
         switch (position) {
             case 0: return new UserGeneralFragment();
-            case 1: return new UserGeneralFragment();
+            case 1: return new UserReposFragment();
             default: return null;
         }
     }

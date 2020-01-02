@@ -12,6 +12,7 @@
     <string name="error_organization_undefined">No such organization</string>
     <string name="error_users_undefined">Cannot get members list for the organization</string>
     <string name="error_user_undefined">Cannot get user details</string>
+    <string name="error_loading_external_resource">Error loading the external url</string>
 
     <string name="navigation_back">back</string>
 
