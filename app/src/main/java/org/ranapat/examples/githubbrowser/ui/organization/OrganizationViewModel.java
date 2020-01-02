@@ -78,7 +78,7 @@ public class OrganizationViewModel extends BaseViewModel {
     private String currentLimit;
     private List<User> usersList;
     private List<ListUser> normalizedUsers;
-    private List<ListUser> sorteddUsers;
+    private List<ListUser> sortedUsers;
 
     public OrganizationViewModel(
             final NetworkManager networkManager,
@@ -247,23 +247,23 @@ public class OrganizationViewModel extends BaseViewModel {
     }
 
     private void normalizeUsers() {
-        sorteddUsers = new ArrayList<>();
+        sortedUsers = new ArrayList<>();
         for (final ListUser _user : normalizedUsers) {
             if (!_user.incomplete) {
-                sorteddUsers.add(_user);
+                sortedUsers.add(_user);
             }
         }
 
-        Collections.sort(sorteddUsers, comparatorFactory.get(currentSortBy, currentSortDirection));
+        Collections.sort(sortedUsers, comparatorFactory.get(currentSortBy, currentSortDirection));
 
         if (currentLimit.equals(UP_TO_LIMIT)) {
-            sorteddUsers = sorteddUsers.subList(
+            sortedUsers = sortedUsers.subList(
                     0,
-                    Math.min(sorteddUsers.size(), currentConfiguration.defaultMembersInOrganizationPerPage)
+                    Math.min(sortedUsers.size(), currentConfiguration.defaultMembersInOrganizationPerPage)
             );
         }
 
-        users.onNext(sorteddUsers);
+        users.onNext(sortedUsers);
     }
 
     private void loadUsers() {
