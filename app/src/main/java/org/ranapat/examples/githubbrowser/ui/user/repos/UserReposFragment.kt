@@ -30,8 +30,26 @@ class UserReposFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initializeListeners()
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         viewModel.initialize()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        compositeDisposable.clear()
+        viewModel.viewStopped()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        compositeDisposable.clear()
+        viewModel.viewStopped()
     }
 
     private fun initializeListeners() {

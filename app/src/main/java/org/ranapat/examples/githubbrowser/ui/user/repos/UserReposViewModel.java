@@ -11,13 +11,9 @@ import org.ranapat.examples.githubbrowser.ui.BaseViewModel;
 import org.ranapat.instancefactory.Fi;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Maybe;
-import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
-import static org.ranapat.examples.githubbrowser.ui.common.States.ERROR;
 import static org.ranapat.examples.githubbrowser.ui.common.States.LOADING;
 import static org.ranapat.examples.githubbrowser.ui.common.States.READY;
 
@@ -63,21 +59,12 @@ public class UserReposViewModel extends BaseViewModel {
 
         currentUser = temporaryDataKeeperManager.user;
 
-        subscription(Maybe.just(true)
-                .delay(1, TimeUnit.SECONDS)
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(final Boolean _aBoolean) {
-                        url.onNext(currentUser.urls.reposUrl);
-                        state.onNext(READY);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(final Throwable throwable) {
-                        state.onNext(ERROR);
-                    }
-                })
-        );
+        url.onNext(currentUser.urls.reposUrl);
+        state.onNext(READY);
+    }
+
+    public void viewStopped() {
+        clearDisposables();
     }
 
     @Override
