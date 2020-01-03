@@ -89,9 +89,9 @@ ext {
     config_api_production = "https://sandbox.ranapat.org/githubbrowser/config.json"
 
     // values below 0 will make records not to expire
-    keep_configuration_for_development = 30
+    keep_configuration_for_development = 43800
     keep_configuration_for_production = 43800
 
-    keep_entities_for_development = 10
+    keep_entities_for_development = 10080
     keep_entities_for_production = 10080
 }
