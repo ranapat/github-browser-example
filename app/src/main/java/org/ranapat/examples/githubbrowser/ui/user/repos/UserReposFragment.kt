@@ -58,13 +58,21 @@ class UserReposFragment : Fragment() {
                     try {
                         val jsonArray = JSONArray(URL(it).readText())
 
-                        runOnUiThread {
-                            rv_json.bindJson(jsonArray)
-                            error.isVisible = false
+                        if (isAdded) {
+                            runOnUiThread {
+                                if (isAdded) {
+                                    rv_json.bindJson(jsonArray)
+                                    error.isVisible = false
+                                }
+                            }
                         }
-                    } catch (e: Exception) {
-                        runOnUiThread {
-                            error.isVisible = true
+                    } catch (e:Exception) {
+                        if (isAdded) {
+                            runOnUiThread {
+                                if (isAdded) {
+                                    error.isVisible = true
+                                }
+                            }
                         }
                     }
                 }
