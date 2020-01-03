@@ -95,10 +95,18 @@ public class MainViewModel extends BaseViewModel {
         );
     }
 
+    public void cancelSearch() {
+        clearDisposables();
+
+        state.onNext(READY);
+        undefinedOrganization.onNext(false);
+    }
+
     public void searchForOrganization(final String login) {
         state.onNext(LOADING);
         undefinedOrganization.onNext(false);
 
+        clearDisposables();
         subscription(organizationObservable
                 .fetchByLogin(login)
                 .subscribe(new Consumer<Organization>() {

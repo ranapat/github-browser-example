@@ -100,6 +100,8 @@ class MainActivity : BaseActivity() {
             false
         })
         clear.setOnClickListener {
+            viewModel.cancelSearch()
+
             undefinedOrganizationContainer.isVisible = false
 
             search.setText("")
