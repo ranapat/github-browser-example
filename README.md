@@ -1,6 +1,6 @@
-# github browser example
+# Architectural components android example github browser
 
-Github browser android example
+Github browser based on architectural components - MVVM, ViewModel, RX 2.x, Room implemented in Java and Kotlin
 
 ## Requirements
 * Java 8
